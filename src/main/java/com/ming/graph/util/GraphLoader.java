@@ -4,11 +4,11 @@ import ch.qos.logback.classic.Logger;
 import com.google.common.base.Supplier;
 import com.google.common.collect.BiMap;
 import com.ming.graph.config.Constants;
-import com.ming.graph.fmwk.MetadataId;
 import com.ming.graph.impl.EdgeFactory;
 import com.ming.graph.impl.VertexFactory;
 import com.ming.graph.model.Edge;
 import com.ming.graph.model.Node;
+import com.ming.graph.xsd.GraphmlType;
 import edu.uci.ics.jung.graph.*;
 import edu.uci.ics.jung.io.GraphMLMetadata;
 import edu.uci.ics.jung.io.GraphMLReader;
@@ -16,15 +16,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static com.ming.graph.config.Constants.GRAPH_KEYS;
+import static com.ming.graph.config.Constants.GRAPH_XSD_PKG;
 
 /**
  * Author: bbrighttaer
@@ -39,7 +43,7 @@ public class GraphLoader {
         List<String> graphFilePathList = new ArrayList<>();
         final String folderPath = GraphLoader.class.getResource("/" + StringUtils
                 .removeStart(StringUtils.removeEnd(folderName, "/"), "/")).getPath();
-        System.out.println(folderPath);
+        log.info(folderPath);
         File file = new File(folderPath);
         if (file.isDirectory()) {
             final String[] files = file.list((dir, name) -> StringUtils.endsWith(name, ".graphml"));
@@ -69,52 +73,26 @@ public class GraphLoader {
     }
 
     private static void setEdgeProperties(DirectedGraph<Node, Edge> graph, Map<String, GraphMLMetadata<Edge>> edgeMetadata) {
-        graph.getEdges().forEach(e -> {
-            final Field[] fields = Edge.class.getDeclaredFields();
-            for (int i = 0; i < fields.length; i++) {
-                Field f = fields[i];
-                if (f.isAnnotationPresent(MetadataId.class)) {
-                    final String id = f.getAnnotation(MetadataId.class).value();
-                    String val;
-                    try {
-                        val = edgeMetadata.get(id).transformer.apply(e);
-                    } catch (Exception e1) {
-                        val = null;
-                    }
-                    try {
-                        final Method m = Edge.class.getDeclaredMethod("set" + StringUtils.capitalize(f.getName()), String.class);
-                        m.invoke(e, val);
-                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            }
-        });
+        graph.getEdges().forEach(e ->
+                edgeMetadata.forEach((s, edgeGraphMLMetadata)
+                        -> {
+                    String keyName = null;
+                    if (GRAPH_KEYS.size() > 0)
+                        keyName = GRAPH_KEYS.get(s);
+                    e.getEdgePropsMap().put((keyName == null) ? s : keyName, edgeGraphMLMetadata.transformer.apply(e));
+                }));
     }
 
     private static void setNodeProperties(DirectedGraph<Node, Edge> graph, BiMap<Node, String> vertexIds, Map<String,
             GraphMLMetadata<Node>> vertexMetadata) {
         graph.getVertices().forEach(n -> {
             n.setId(vertexIds.get(n));
-            final Field[] fields = Node.class.getDeclaredFields();
-            for (int i = 0; i < fields.length; i++) {
-                Field f = fields[i];
-                if (f.isAnnotationPresent(MetadataId.class)) {
-                    final String id = f.getAnnotation(MetadataId.class).value();
-                    String val;
-                    try {
-                        val = vertexMetadata.get(id).transformer.apply(n);
-                    } catch (Exception e) {
-                        val = null;
-                    }
-                    try {
-                        final Method m = Node.class.getDeclaredMethod("set" + StringUtils.capitalize(f.getName()), String.class);
-                        m.invoke(n, val);
-                    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+            vertexMetadata.forEach((s, nodeGraphMLMetadata) -> {
+                String keyName = null;
+                if (GRAPH_KEYS.size() > 0)
+                    keyName = GRAPH_KEYS.get(s);
+                n.getNodePropsMap().put((keyName == null) ? s : keyName, nodeGraphMLMetadata.transformer.apply(n));
+            });
         });
     }
 
@@ -139,5 +117,24 @@ public class GraphLoader {
         UndirectedGraph<Number, Number> graph = new UndirectedSparseGraph<Number, Number>();
         gmlr.load(filePath, graph);
         return graph;
+    }
+
+    public static String printProps(Map<String, String> props) {
+        String separator = ", ";
+        StringBuilder b = new StringBuilder();
+        props.forEach((s, s2) -> b.append(String.format("\"%s\": %s%s", s, s2, separator)));
+        return StringUtils.removeEnd(b.toString(), separator);
+    }
+
+    public static void setGraphKeys(File file) {
+        try {
+            final JAXBContext ctx = JAXBContext.newInstance(GRAPH_XSD_PKG);
+            final Unmarshaller unmarshaller = ctx.createUnmarshaller();
+            final Object o = unmarshaller.unmarshal(file);
+            JAXBElement<GraphmlType> jo = (JAXBElement) o;
+            jo.getValue().getKey().forEach(k -> GRAPH_KEYS.put(k.getId(), k.getAttrName()));
+        } catch (JAXBException e) {
+            log.error(e.getMessage());
+        }
     }
 }

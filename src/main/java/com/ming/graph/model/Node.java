@@ -1,6 +1,9 @@
 package com.ming.graph.model;
 
-import com.ming.graph.fmwk.MetadataId;
+import java.util.HashMap;
+import java.util.Map;
+
+import static com.ming.graph.util.GraphLoader.printProps;
 
 /**
  * Author: bbrighttaer
@@ -10,14 +13,10 @@ import com.ming.graph.fmwk.MetadataId;
  */
 public class Node {
     private String id;
-    @MetadataId("d3")
-    private String osmid;
-    @MetadataId("d5")
-    private String y;
-    @MetadataId("d4")
-    private String x;
+    private final Map<String, String> nodePropsMap;
 
     public Node() {
+        this.nodePropsMap = new HashMap<>();
     }
 
     public String getId() {
@@ -28,41 +27,14 @@ public class Node {
         this.id = id;
     }
 
-    public String getOsmid() {
-        return osmid;
-    }
-
-    public void setOsmid(String osmid) {
-        this.osmid = osmid;
-    }
-
-    public String getY() {
-        return y;
-    }
-
-    public void setY(String y) {
-        this.y = y;
-    }
-
-    public String getX() {
-        return x;
-    }
-
-    public void setX(String x) {
-        this.x = x;
-    }
-
-    public String stringify() {
-        return "Node{" +
-                "id='" + id + '\'' +
-                ", osmid='" + osmid + '\'' +
-                ", y='" + y + '\'' +
-                ", x='" + x + '\'' +
-                '}';
+    public Map<String, String> getNodePropsMap() {
+        return nodePropsMap;
     }
 
     @Override
     public String toString() {
-        return id;
+        return "Node{" +
+                "id = '" + id + '\'' +
+                ", properties : {" + printProps(nodePropsMap)+ "}}";
     }
 }

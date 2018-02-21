@@ -80,7 +80,7 @@ public class GraphAnalysis implements IGraphAnalysis {
              * the other vertex of the new information to the already added new vertex
              */
             Edge evolved = new Edge();
-            evolved.setName("EvolvedStreet");
+            //evolved.setName("EvolvedStreet");
             List<Node> vertices = new ArrayList<>(initialGraph.getVertices());
             initialGraph.addEdge(evolved, vertices.get((int) (Math.random() * vertices.size())),
                     incidentVertices.iterator().next());
@@ -98,6 +98,7 @@ public class GraphAnalysis implements IGraphAnalysis {
         if (StringUtils.isEmpty(currentEvGraphName)) {
             currentEvGraphName = graphMetadataMap.get(currentEvolveGraph).get(GRAPH_NAME_ID)
                     .transformer.apply((DirectedGraph<Node, Edge>) currentEvolveGraph);
+            if(currentEvGraphName == null) throw new RuntimeException("Graph name ID is not set or does not exist in the graph");
         }
     }
 
