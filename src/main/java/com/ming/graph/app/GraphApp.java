@@ -11,9 +11,13 @@ import org.xml.sax.SAXException;
 
 import javax.swing.*;
 import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.ming.graph.config.Constants.BASE_GRAPH_INDEX;
+import static com.ming.graph.config.Constants.GRAPH_FOLDER_NAME;
 
 /**
  * Author: bbrighttaer
@@ -23,22 +27,27 @@ import java.util.List;
  */
 public class GraphApp {
     private static Logger log = (Logger) LoggerFactory.getLogger(GraphApp.class);
+
     public static void main(String[] args) {
         Timer loadingTimer, simTimer;
         loadingTimer = new Timer(3000, e -> log.info("Loading graphs..."));
         loadingTimer.start();
-        final List<String> graphPaths = GraphLoader.getFilePaths("data");
+        final List<String> graphPaths = GraphLoader.getFilePaths(GRAPH_FOLDER_NAME);
+        if (graphPaths.size() > 0) {
+            GraphLoader.setGraphKeys(new File(graphPaths.get(BASE_GRAPH_INDEX)));
+        }
         List<Graph<Node, Edge>> graphList = new ArrayList<>();
         graphPaths.forEach(s -> {
             try {
-                graphList.add(GraphLoader.getDirectedGraph(s));
+                graphList.add(GraphLoader.getGraph(s));
             } catch (ParserConfigurationException | SAXException | IOException e) {
                 log.error(e.getMessage());
             }
         });
         loadingTimer.stop();
-        simTimer = new Timer(1000, new DecisionRound(new GraphAnalysis(graphList.remove(0), graphList)));
+        simTimer = new Timer(1000, new DecisionRound(new GraphAnalysis(graphList.remove(BASE_GRAPH_INDEX), graphList)));
         simTimer.start();
-        while (true){}
+        while (true) {
+        }
     }
 }

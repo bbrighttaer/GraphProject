@@ -239,8 +239,8 @@ public class DataMining implements IDataMining {
         visViewer.getRenderer().getVertexLabelRenderer().setPosition(Renderer.VertexLabel.Position.AUTO);
 
         final AbstractModalGraphMouse graphMouse = new DefaultModalGraphMouse<Number, Number>();
-        visViewer.setVertexToolTipTransformer(node -> String.format("[%s, %s]", node.getX(), node.getY()));
-        visViewer.setEdgeToolTipTransformer(edge -> edge.getName());
+//        visViewer.setVertexToolTipTransformer(node -> String.format("[%s, %s]", node.getX(), node.getY()));
+//        visViewer.setEdgeToolTipTransformer(edge -> edge.getName());
         visViewer.addGraphMouseListener(new GraphMouseListenerImpl<>());
         visViewer.setGraphMouse(graphMouse);
         visViewer.addKeyListener(graphMouse.getModeKeyListener());

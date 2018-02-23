@@ -6,7 +6,6 @@ import com.ming.graph.fmwk.IGraphAnalysis;
 import com.ming.graph.impl.DataMining;
 import com.ming.graph.model.Edge;
 import com.ming.graph.model.Node;
-import edu.uci.ics.jung.graph.DirectedGraph;
 import edu.uci.ics.jung.graph.Graph;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static com.ming.graph.config.Constants.GRAPH_NAME_ID;
 import static com.ming.graph.config.Constants.graphMetadataMap;
 
 /**
@@ -80,7 +78,7 @@ public class GraphAnalysis implements IGraphAnalysis {
              * the other vertex of the new information to the already added new vertex
              */
             Edge evolved = new Edge();
-            evolved.setName("EvolvedStreet");
+            //evolved.setName("EvolvedStreet");
             List<Node> vertices = new ArrayList<>(initialGraph.getVertices());
             initialGraph.addEdge(evolved, vertices.get((int) (Math.random() * vertices.size())),
                     incidentVertices.iterator().next());
@@ -96,8 +94,8 @@ public class GraphAnalysis implements IGraphAnalysis {
 
     private void setCurrentEvGraphName() {
         if (StringUtils.isEmpty(currentEvGraphName)) {
-            currentEvGraphName = graphMetadataMap.get(currentEvolveGraph).get(GRAPH_NAME_ID)
-                    .transformer.apply((DirectedGraph<Node, Edge>) currentEvolveGraph);
+            currentEvGraphName = graphMetadataMap.get(currentEvolveGraph);
+            if(currentEvGraphName == null) throw new RuntimeException("Graph name ID is not set or does not exist in the graph");
         }
     }
 
