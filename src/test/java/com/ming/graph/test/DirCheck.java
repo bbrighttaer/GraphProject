@@ -21,7 +21,7 @@ public class DirCheck extends TestCase{
     private static Logger log = (Logger) LoggerFactory.getLogger(DirCheck.class);
 
     public void testDataSet(){
-        final String path = DirCheck.class.getResource("/data").getPath();
+        final String path = DirCheck.class.getResource("/data_coauthors").getPath();
         System.out.println(path);
         File file = new File(path);
         if(file.isDirectory()){
@@ -33,7 +33,7 @@ public class DirCheck extends TestCase{
     }
 
     public void testGraphFilePaths(){
-        final List<String> data = GraphLoader.getFilePaths("data");
+        final List<String> data = GraphLoader.getFilePaths("data_coauthors");
         StringBuilder bldr = new StringBuilder();
         for (int i = 0; i < data.size(); i++) {
             bldr.append(data.get(i)).append("\n");

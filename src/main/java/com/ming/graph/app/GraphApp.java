@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.ming.graph.config.Constants.BASE_GRAPH_INDEX;
 import static com.ming.graph.config.Constants.GRAPH_FOLDER_NAME;
 
 /**
@@ -33,18 +34,18 @@ public class GraphApp {
         loadingTimer.start();
         final List<String> graphPaths = GraphLoader.getFilePaths(GRAPH_FOLDER_NAME);
         if (graphPaths.size() > 0) {
-            GraphLoader.setGraphKeys(new File(graphPaths.get(0)));
+            GraphLoader.setGraphKeys(new File(graphPaths.get(BASE_GRAPH_INDEX)));
         }
         List<Graph<Node, Edge>> graphList = new ArrayList<>();
         graphPaths.forEach(s -> {
             try {
-                graphList.add(GraphLoader.getDirectedGraph(s));
+                graphList.add(GraphLoader.getGraph(s));
             } catch (ParserConfigurationException | SAXException | IOException e) {
                 log.error(e.getMessage());
             }
         });
         loadingTimer.stop();
-        simTimer = new Timer(1000, new DecisionRound(new GraphAnalysis(graphList.remove(0), graphList)));
+        simTimer = new Timer(1000, new DecisionRound(new GraphAnalysis(graphList.remove(BASE_GRAPH_INDEX), graphList)));
         simTimer.start();
         while (true) {
         }

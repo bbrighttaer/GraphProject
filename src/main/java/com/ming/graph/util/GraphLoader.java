@@ -1,13 +1,13 @@
 package com.ming.graph.util;
 
 import ch.qos.logback.classic.Logger;
-import com.google.common.base.Supplier;
 import com.google.common.collect.BiMap;
 import com.ming.graph.config.Constants;
 import com.ming.graph.impl.EdgeFactory;
 import com.ming.graph.impl.VertexFactory;
 import com.ming.graph.model.Edge;
 import com.ming.graph.model.Node;
+import com.ming.graph.xsd.GraphType;
 import com.ming.graph.xsd.GraphmlType;
 import edu.uci.ics.jung.graph.*;
 import edu.uci.ics.jung.io.GraphMLMetadata;
@@ -38,6 +38,8 @@ import static com.ming.graph.config.Constants.GRAPH_XSD_PKG;
  */
 public class GraphLoader {
     private static Logger log = (Logger) LoggerFactory.getLogger(GraphLoader.class);
+    public static int GRAPH_COUNT = 0;
+    public static boolean isDirected;
 
     public static List<String> getFilePaths(String folderName) {
         List<String> graphFilePathList = new ArrayList<>();
@@ -54,25 +56,37 @@ public class GraphLoader {
         return graphFilePathList;
     }
 
-    public static Graph<Node, Edge> getDirectedGraph(String filePath) throws ParserConfigurationException, SAXException, IOException {
-        GraphMLReader<DirectedGraph<Node, Edge>, Node, Edge> gmlr =
-                new GraphMLReader<>(new VertexFactory(), new EdgeFactory());
-        DirectedGraph<Node, Edge> graph = new DirectedSparseGraph<>();
-        gmlr.load(filePath, graph);
-
-        if (graph != null) {
-            BiMap<Node, String> vertexIds = gmlr.getVertexIDs();
-            //final BiMap<Edge, String> edgeIDs = gmlr.getEdgeIDs();
-            final Map<String, GraphMLMetadata<Node>> vertexMetadata = gmlr.getVertexMetadata();
-            final Map<String, GraphMLMetadata<Edge>> edgeMetadata = gmlr.getEdgeMetadata();
-            Constants.graphMetadataMap.put(graph, gmlr.getGraphMetadata());
-            setNodeProperties(graph, vertexIds, vertexMetadata);
-            setEdgeProperties(graph, edgeMetadata);
+    public static Graph<Node, Edge> getGraph(String filePath) throws ParserConfigurationException, SAXException, IOException {
+        if (isDirected) {
+            GraphMLReader<DirectedGraph<Node, Edge>, Node, Edge> gmlr;
+            DirectedGraph<Node, Edge> graph;
+            gmlr = new GraphMLReader<>(new VertexFactory(), new EdgeFactory());
+            graph = new DirectedSparseGraph<>();
+            gmlr.load(filePath, graph);
+            setGraphMetadata(graph, gmlr);
+            return graph;
+        } else {
+            GraphMLReader<UndirectedGraph<Node, Edge>, Node, Edge> gmlr;
+            UndirectedGraph<Node, Edge> graph;
+            gmlr = new GraphMLReader<>(new VertexFactory(), new EdgeFactory());
+            graph = new UndirectedSparseGraph<>();
+            gmlr.load(filePath, graph);
+            setGraphMetadata(graph, gmlr);
+            return graph;
         }
-        return graph;
     }
 
-    private static void setEdgeProperties(DirectedGraph<Node, Edge> graph, Map<String, GraphMLMetadata<Edge>> edgeMetadata) {
+    private static void setGraphMetadata(Graph<Node, Edge> graph, GraphMLReader gmlr) {
+        BiMap<Node, String> vertexIds = gmlr.getVertexIDs();
+        //final BiMap<Edge, String> edgeIDs = gmlr.getEdgeIDs();
+        final Map<String, GraphMLMetadata<Node>> vertexMetadata = gmlr.getVertexMetadata();
+        final Map<String, GraphMLMetadata<Edge>> edgeMetadata = gmlr.getEdgeMetadata();
+        Constants.graphMetadataMap.put(graph, "Graph-" + (++GRAPH_COUNT));
+        setNodeProperties(graph, vertexIds, vertexMetadata);
+        setEdgeProperties(graph, edgeMetadata);
+    }
+
+    private static void setEdgeProperties(Graph<Node, Edge> graph, Map<String, GraphMLMetadata<Edge>> edgeMetadata) {
         graph.getEdges().forEach(e ->
                 edgeMetadata.forEach((s, edgeGraphMLMetadata)
                         -> {
@@ -83,7 +97,7 @@ public class GraphLoader {
                 }));
     }
 
-    private static void setNodeProperties(DirectedGraph<Node, Edge> graph, BiMap<Node, String> vertexIds, Map<String,
+    private static void setNodeProperties(Graph<Node, Edge> graph, BiMap<Node, String> vertexIds, Map<String,
             GraphMLMetadata<Node>> vertexMetadata) {
         graph.getVertices().forEach(n -> {
             n.setId(vertexIds.get(n));
@@ -94,29 +108,6 @@ public class GraphLoader {
                 n.getNodePropsMap().put((keyName == null) ? s : keyName, nodeGraphMLMetadata.transformer.apply(n));
             });
         });
-    }
-
-    public static Graph getUnDirectedGraph(String filePath) throws ParserConfigurationException, SAXException, IOException {
-        Supplier<Number> vertexFactory = new Supplier<Number>() {
-            int n = 0;
-
-            public Number get() {
-                return n++;
-            }
-        };
-        Supplier<Number> edgeFactory = new Supplier<Number>() {
-            int n = 0;
-
-            public Number get() {
-                return n++;
-            }
-        };
-
-        GraphMLReader<UndirectedGraph<Number, Number>, Number, Number> gmlr =
-                new GraphMLReader<UndirectedGraph<Number, Number>, Number, Number>(vertexFactory, edgeFactory);
-        UndirectedGraph<Number, Number> graph = new UndirectedSparseGraph<Number, Number>();
-        gmlr.load(filePath, graph);
-        return graph;
     }
 
     public static String printProps(Map<String, String> props) {
@@ -133,6 +124,8 @@ public class GraphLoader {
             final Object o = unmarshaller.unmarshal(file);
             JAXBElement<GraphmlType> jo = (JAXBElement) o;
             jo.getValue().getKey().forEach(k -> GRAPH_KEYS.put(k.getId(), k.getAttrName()));
+            isDirected = ((GraphType) jo.getValue().getGraphOrData().get(0)).getEdgedefault().value()
+                    .equalsIgnoreCase("directed");
         } catch (JAXBException e) {
             log.error(e.getMessage());
         }

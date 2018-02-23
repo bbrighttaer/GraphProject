@@ -32,12 +32,12 @@ public class GraphTest extends TestCase {
     private static Logger log = (Logger) LoggerFactory.getLogger(GraphTest.class);
 
     public void testGraphLoading() {
-        final List<String> graphPaths = GraphLoader.getFilePaths("data");
+        final List<String> graphPaths = GraphLoader.getFilePaths("data_streets");
         setkeys(graphPaths, false);
         List<Graph<Node, Edge>> graphList = new ArrayList<>();
         graphPaths.forEach(s -> {
             try {
-                graphList.add(GraphLoader.getDirectedGraph(s));
+                graphList.add(GraphLoader.getGraph(s));
             } catch (ParserConfigurationException | SAXException | IOException e) {
                 log.error(e.getMessage());
             }
@@ -52,6 +52,7 @@ public class GraphTest extends TestCase {
         log.info("Edges");
         graphList.get(0).getEdges().forEach(e -> System.out.println(e.toString()));
         Assert.assertEquals(graphPaths.size(), graphList.size());
+        log.info("Total loaded graphs = {}", GraphLoader.GRAPH_COUNT);
     }
 
     public void testJaxbLoading() throws JAXBException {
