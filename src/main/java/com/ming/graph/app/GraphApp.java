@@ -45,7 +45,7 @@ public class GraphApp {
             }
         });
         loadingTimer.stop();
-        simTimer = new Timer(1000, new DecisionRound(new GraphAnalysis(graphList.remove(BASE_GRAPH_INDEX), graphList)));
+        simTimer = new Timer(1000, new DecisionRound(new GraphAnalysis(graphList)));
         simTimer.start();
         while (true) {
         }

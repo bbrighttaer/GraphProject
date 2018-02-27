@@ -7,13 +7,16 @@ import com.ming.graph.impl.DataMining;
 import com.ming.graph.model.Edge;
 import com.ming.graph.model.Node;
 import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.UndirectedSparseGraph;
+import edu.uci.ics.jung.graph.util.Pair;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
+import static com.ming.graph.config.Constants.RAND_GEN_SEED;
 import static com.ming.graph.config.Constants.graphMetadataMap;
 
 /**
@@ -30,13 +33,15 @@ public class GraphAnalysis implements IGraphAnalysis {
     private Graph<Node, Edge> currentEvolveGraph;
     private String currentEvGraphName;
     private List<Edge> edgeList;
+    private Random rand;
 
-    public GraphAnalysis(Graph<Node, Edge> initialGraph, List<Graph<Node, Edge>> evolveGraphList) {
-        this.initialGraph = initialGraph;
+    public GraphAnalysis(List<Graph<Node, Edge>> evolveGraphList) {
+        this.initialGraph = new UndirectedSparseGraph<>();
         this.evolveGraphList = evolveGraphList;
         this.dataMining = new DataMining();
         currentEvolveGraph = evolveGraphList.remove(0);
         edgeList = new ArrayList<>(currentEvolveGraph.getEdges());
+        this.rand = new Random(RAND_GEN_SEED);
     }
 
     public Graph<Node, Edge> getInitialGraph() {
@@ -49,7 +54,7 @@ public class GraphAnalysis implements IGraphAnalysis {
 
     @Override
     public void evolveGraph() {
-        if (currentEvolveGraph.getEdgeCount() > 0) {
+        if (edgeList.size() > 0) {
             setCurrentEvGraphName();
             log.info("current graph for evolution: {}, vertices count = {}, edges count = {}, edgeList = {}",
                     currentEvGraphName, currentEvolveGraph.getVertexCount(),
@@ -66,36 +71,28 @@ public class GraphAnalysis implements IGraphAnalysis {
     }
 
     private void performInfoEvolution() {
-        //takes from the current graph for information evolution
-        final Edge edge = edgeList.remove(0);
-        final Collection<Node> incidentVertices;
-        try {
-            incidentVertices = currentEvolveGraph.getIncidentVertices(edge);
+        int edge_index;
+        Edge e;
+        Pair<Node> endpoints;
+        boolean flag;
+        //selects and edge index
+        do {
+            edge_index = rand.nextInt(edgeList.size());
+            e = edgeList.get(edge_index);
+            endpoints = currentEvolveGraph.getEndpoints(e);
+            Edge edge = initialGraph.findEdge(endpoints.getFirst(), endpoints.getSecond());
+            flag = edge == null;
+        } while (!flag);
 
-            /**
-             * adds to the existing graph.
-             * Join one of the vertices of the new information to the existing graph then join
-             * the other vertex of the new information to the already added new vertex
-             */
-            Edge evolved = new Edge();
-            //evolved.setName("EvolvedStreet");
-            List<Node> vertices = new ArrayList<>(initialGraph.getVertices());
-            initialGraph.addEdge(evolved, vertices.get((int) (Math.random() * vertices.size())),
-                    incidentVertices.iterator().next());
-            initialGraph.addEdge(edge, incidentVertices);
-
-            //removes the added information from the current graph for information evolution
-            currentEvolveGraph.removeEdge(edge);
-            incidentVertices.forEach(v -> currentEvolveGraph.removeVertex(v));
-        } catch (Exception e) {
-            //log.error(e.getMessage());
-        }
+        if (initialGraph.addEdge(e, endpoints.getFirst(), endpoints.getSecond()))
+            edgeList.remove(edge_index);
     }
 
     private void setCurrentEvGraphName() {
         if (StringUtils.isEmpty(currentEvGraphName)) {
             currentEvGraphName = graphMetadataMap.get(currentEvolveGraph);
-            if(currentEvGraphName == null) throw new RuntimeException("Graph name ID is not set or does not exist in the graph");
+            if (currentEvGraphName == null)
+                throw new RuntimeException("Graph name ID is not set or does not exist in the graph");
         }
     }
 

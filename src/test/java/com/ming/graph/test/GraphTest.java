@@ -1,6 +1,7 @@
 package com.ming.graph.test;
 
 import ch.qos.logback.classic.Logger;
+import com.ming.graph.config.Constants;
 import com.ming.graph.model.Edge;
 import com.ming.graph.model.Node;
 import com.ming.graph.util.GraphLoader;
@@ -18,6 +19,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.ming.graph.config.Constants.GRAPH_KEYS;
 import static com.ming.graph.config.Constants.GRAPH_XSD_PKG;
@@ -32,7 +35,7 @@ public class GraphTest extends TestCase {
     private static Logger log = (Logger) LoggerFactory.getLogger(GraphTest.class);
 
     public void testGraphLoading() {
-        final List<String> graphPaths = GraphLoader.getFilePaths("data_streets");
+        final List<String> graphPaths = GraphLoader.getFilePaths(Constants.GRAPH_FOLDER_NAME);
         setkeys(graphPaths, false);
         List<Graph<Node, Edge>> graphList = new ArrayList<>();
         graphPaths.forEach(s -> {
@@ -56,7 +59,7 @@ public class GraphTest extends TestCase {
     }
 
     public void testJaxbLoading() throws JAXBException {
-        final List<String> graphPaths = GraphLoader.getFilePaths("test");
+        final List<String> graphPaths = GraphLoader.getFilePaths(Constants.GRAPH_FOLDER_NAME);
         final JAXBContext ctx = JAXBContext.newInstance(GRAPH_XSD_PKG);
         final Unmarshaller unmarshaller = ctx.createUnmarshaller();
         final Object o = unmarshaller.unmarshal(new File(graphPaths.get(0)));
@@ -72,6 +75,17 @@ public class GraphTest extends TestCase {
             GraphLoader.setGraphKeys(new File(graphPaths.get(0)));
             if (print)
                 GRAPH_KEYS.forEach((s, s2) -> System.out.println(String.format("%s -> %s", s, s2)));
+        }
+    }
+
+    public void testYearRegEx() {
+        String[] ayjid = {"PHONG LE TRIEU 2018 IEEE TRANSACTIONS ON INFORMATION FORENSICS AND SECURITY",
+                "HU ZE 2018 NEUROCOMPUTING"};
+        Pattern p = Pattern.compile("(.*)(\\d{4})(.*)");
+        for (String s : ayjid) {
+            Matcher m = p.matcher(s);
+            if (m.matches())
+                log.info(m.group(2));
         }
     }
 }

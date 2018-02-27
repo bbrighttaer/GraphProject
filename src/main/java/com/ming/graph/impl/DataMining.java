@@ -225,9 +225,9 @@ public class DataMining implements IDataMining {
         //Renderer options
         visViewer.getRenderer().setVertexRenderer(new BasicVertexRenderer<>());
         visViewer.getRenderContext().setVertexFillPaintTransformer(node -> {
-            if(this.maxOutDegreeNode.equals(node))
+            if (maxOutDegreeNode != null && this.maxOutDegreeNode.equals(node))
                 return Color.ORANGE;
-            else if(this.maxInDegreeNode.equals(node))
+            else if (maxInDegreeNode != null && this.maxInDegreeNode.equals(node))
                 return Color.CYAN;
             else
                 return Color.WHITE;
@@ -239,8 +239,8 @@ public class DataMining implements IDataMining {
         visViewer.getRenderer().getVertexLabelRenderer().setPosition(Renderer.VertexLabel.Position.AUTO);
 
         final AbstractModalGraphMouse graphMouse = new DefaultModalGraphMouse<Number, Number>();
-//        visViewer.setVertexToolTipTransformer(node -> String.format("[%s, %s]", node.getX(), node.getY()));
-//        visViewer.setEdgeToolTipTransformer(edge -> edge.getName());
+        visViewer.setVertexToolTipTransformer(Node::getId);
+        visViewer.setEdgeToolTipTransformer(Edge::printLabel);
         visViewer.addGraphMouseListener(new GraphMouseListenerImpl<>());
         visViewer.setGraphMouse(graphMouse);
         visViewer.addKeyListener(graphMouse.getModeKeyListener());

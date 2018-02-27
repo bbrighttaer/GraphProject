@@ -22,6 +22,10 @@ public class Edge {
         return edgePropsMap;
     }
 
+    public String printLabel() {
+        return printProps(edgePropsMap);
+    }
+
     @Override
     public String toString() {
         return "Edge{properties: {" + printProps(edgePropsMap) + "}}";
