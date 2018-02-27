@@ -26,9 +26,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import static com.ming.graph.config.Constants.GRAPH_KEYS;
-import static com.ming.graph.config.Constants.GRAPH_XSD_PKG;
+import static com.ming.graph.config.Constants.*;
 
 /**
  * Author: bbrighttaer
@@ -129,5 +130,33 @@ public class GraphLoader {
         } catch (JAXBException e) {
             log.error(e.getMessage());
         }
+    }
+
+    //specific to web of science graphs
+    public static String getYearOfEdge(Edge e) {
+        String ayjid = e.getEdgePropsMap().get(AUTHOR_JOURNAL_ID);
+        Pattern p = Pattern.compile(AUTHOR_JOURNAL_REGEX);
+        Matcher m = p.matcher(ayjid);
+        if (m.matches())
+            return (m.group(2));
+        return NOT_DEFINED;
+    }
+
+    public static String getFirstAuthor(Edge e) {
+        String ayjid = e.getEdgePropsMap().get(AUTHOR_JOURNAL_ID);
+        Pattern p = Pattern.compile(AUTHOR_JOURNAL_REGEX);
+        Matcher m = p.matcher(ayjid);
+        if (m.matches())
+            return (m.group(1));
+        return NOT_DEFINED;
+    }
+
+    public static String getJournal(Edge e) {
+        String ayjid = e.getEdgePropsMap().get(AUTHOR_JOURNAL_ID);
+        Pattern p = Pattern.compile(AUTHOR_JOURNAL_REGEX);
+        Matcher m = p.matcher(ayjid);
+        if (m.matches())
+            return (m.group(3));
+        return NOT_DEFINED;
     }
 }
