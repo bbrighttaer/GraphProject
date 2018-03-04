@@ -14,7 +14,7 @@ import java.util.Map;
  * Project: GraphProject
  */
 public class Constants {
-    public static Map<Graph<Node, Edge>, String> graphMetadataMap = new HashMap<>();
+    public static Map<Graph<Node, Edge>, String> GRAPH_METADATA_MAP = new HashMap<>();
     public static final String GRAPH_XSD_PKG = "com.ming.graph.xsd";
     public static final Map<String, String> GRAPH_KEYS = new HashMap<>();
     public static final String GRAPH_FOLDER_NAME = "wos";
@@ -24,4 +24,7 @@ public class Constants {
     public static final String AUTHOR_JOURNAL_REGEX = "(.*)(\\d{4})(.*)";
     public static final String NOT_DEFINED = "nd";
     public static final String DATA_DIR = "data/";
+    public static boolean SIM_OVER = false;
+    public static double NORMALIZATION_CONSTANT = 0.4;
+    public static double POWER_LAW_ALPHA = 2;
 }
