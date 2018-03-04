@@ -1,7 +1,7 @@
 package com.ming.graph.impl;
 
 import com.google.common.base.Supplier;
-import com.ming.graph.fmwk.IDataMining;
+import com.ming.graph.api.IDataMining;
 import com.ming.graph.model.Edge;
 import com.ming.graph.model.Node;
 import edu.uci.ics.jung.algorithms.cluster.EdgeBetweennessClusterer;
@@ -11,7 +11,7 @@ import edu.uci.ics.jung.algorithms.generators.random.BarabasiAlbertGenerator;
 import edu.uci.ics.jung.algorithms.generators.random.EppsteinPowerLawGenerator;
 import edu.uci.ics.jung.algorithms.generators.random.KleinbergSmallWorldGenerator;
 import edu.uci.ics.jung.algorithms.importance.BetweennessCentrality;
-import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.algorithms.layout.*;
 import edu.uci.ics.jung.algorithms.layout.SpringLayout;
 import edu.uci.ics.jung.algorithms.scoring.PageRank;
 import edu.uci.ics.jung.algorithms.scoring.PageRankWithPriors;

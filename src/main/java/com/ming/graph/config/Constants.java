@@ -23,4 +23,5 @@ public class Constants {
     public static final String AUTHOR_JOURNAL_ID = "ayjid";
     public static final String AUTHOR_JOURNAL_REGEX = "(.*)(\\d{4})(.*)";
     public static final String NOT_DEFINED = "nd";
+    public static final String DATA_DIR = "data/";
 }

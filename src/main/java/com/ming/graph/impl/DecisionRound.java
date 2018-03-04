@@ -2,7 +2,7 @@ package com.ming.graph.impl;
 
 
 import ch.qos.logback.classic.Logger;
-import com.ming.graph.fmwk.IGraphAnalysis;
+import com.ming.graph.api.IGraphAnalysis;
 import org.slf4j.LoggerFactory;
 
 import java.awt.event.ActionEvent;

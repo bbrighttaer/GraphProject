@@ -2,7 +2,7 @@ package com.ming.graph.app;
 
 
 import ch.qos.logback.classic.Logger;
-import com.ming.graph.fmwk.IGraphAnalysis;
+import com.ming.graph.api.IGraphAnalysis;
 import com.ming.graph.impl.DataMining;
 import com.ming.graph.model.Edge;
 import com.ming.graph.model.Node;

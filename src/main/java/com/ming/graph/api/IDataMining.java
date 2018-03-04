@@ -1,4 +1,4 @@
-package com.ming.graph.fmwk;
+package com.ming.graph.api;
 
 import com.ming.graph.model.Edge;
 import com.ming.graph.model.Node;
