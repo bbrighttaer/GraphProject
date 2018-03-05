@@ -23,9 +23,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,14 +35,14 @@ import static com.ming.graph.config.Constants.*;
  * Time: 7:04 PM
  * Project: GraphProject
  */
-public class GraphLoader {
-    private static Logger log = (Logger) LoggerFactory.getLogger(GraphLoader.class);
+public class GraphUtils {
+    private static Logger log = (Logger) LoggerFactory.getLogger(GraphUtils.class);
     public static int GRAPH_COUNT = 0;
     public static boolean isDirected;
 
     public static List<String> getFilePaths(String folderName) {
         List<String> graphFilePathList = new ArrayList<>();
-        final String folderPath = GraphLoader.class.getResource("/" + StringUtils
+        final String folderPath = GraphUtils.class.getResource("/" + StringUtils
                 .removeStart(StringUtils.removeEnd(folderName, "/"), "/")).getPath();
         log.info(folderPath);
         File file = new File(folderPath);
@@ -58,13 +56,14 @@ public class GraphLoader {
     }
 
     public static Graph<Node, Edge> getGraph(String filePath) throws ParserConfigurationException, SAXException, IOException {
+        String graphLabel = StringUtils.substringBefore(StringUtils.substringAfterLast(filePath, "/"), ".graphml");
         if (isDirected) {
             GraphMLReader<DirectedGraph<Node, Edge>, Node, Edge> gmlr;
             DirectedGraph<Node, Edge> graph;
             gmlr = new GraphMLReader<>(new VertexFactory(), new EdgeFactory());
             graph = new DirectedSparseGraph<>();
             gmlr.load(filePath, graph);
-            setGraphMetadata(graph, gmlr);
+            setGraphMetadata(graph, gmlr, graphLabel);
             return graph;
         } else {
             GraphMLReader<UndirectedGraph<Node, Edge>, Node, Edge> gmlr;
@@ -72,17 +71,17 @@ public class GraphLoader {
             gmlr = new GraphMLReader<>(new VertexFactory(), new EdgeFactory());
             graph = new UndirectedSparseGraph<>();
             gmlr.load(filePath, graph);
-            setGraphMetadata(graph, gmlr);
+            setGraphMetadata(graph, gmlr, graphLabel);
             return graph;
         }
     }
 
-    private static void setGraphMetadata(Graph<Node, Edge> graph, GraphMLReader gmlr) {
+    private static void setGraphMetadata(Graph<Node, Edge> graph, GraphMLReader gmlr, String graphLabel) {
         BiMap<Node, String> vertexIds = gmlr.getVertexIDs();
         //final BiMap<Edge, String> edgeIDs = gmlr.getEdgeIDs();
         final Map<String, GraphMLMetadata<Node>> vertexMetadata = gmlr.getVertexMetadata();
         final Map<String, GraphMLMetadata<Edge>> edgeMetadata = gmlr.getEdgeMetadata();
-        Constants.graphMetadataMap.put(graph, "Graph-" + (++GRAPH_COUNT));
+        Constants.GRAPH_METADATA_MAP.put(graph, graphLabel);
         setNodeProperties(graph, vertexIds, vertexMetadata);
         setEdgeProperties(graph, edgeMetadata);
     }
@@ -133,13 +132,22 @@ public class GraphLoader {
     }
 
     //specific to web of science graphs
-    public static String getYearOfEdge(Edge e) {
+    public static Integer getYearOfEdge(Edge e) {
         String ayjid = e.getEdgePropsMap().get(AUTHOR_JOURNAL_ID);
         Pattern p = Pattern.compile(AUTHOR_JOURNAL_REGEX);
         Matcher m = p.matcher(ayjid);
         if (m.matches())
-            return (m.group(2));
-        return NOT_DEFINED;
+            return Integer.valueOf((m.group(2)));
+        return 0;
+    }
+
+    //specific to web of science graphs
+    public static Integer getYear(String s) {
+        Pattern p = Pattern.compile(".*(\\d{4})_\\d+_\\d+");
+        Matcher m = p.matcher(s);
+        if (m.matches())
+            return Integer.valueOf((m.group(1)));
+        return 0;
     }
 
     public static String getFirstAuthor(Edge e) {
@@ -158,5 +166,17 @@ public class GraphLoader {
         if (m.matches())
             return (m.group(3));
         return NOT_DEFINED;
+    }
+
+    public static SortedMap<Integer, List<Graph<Node, Edge>>> groupGraphsIntoYears(List<Graph<Node, Edge>> graphList) {
+        SortedMap<Integer, List<Graph<Node, Edge>>> groupedGraphs = new TreeMap<>();
+        for (Graph<Node, Edge> g : graphList) {
+            final Integer year = getYear(GRAPH_METADATA_MAP.get(g));
+            if (groupedGraphs.containsKey(year)) groupedGraphs.get(year).add(g);
+            else groupedGraphs.put(year, new ArrayList<Graph<Node, Edge>>() {{
+                add(g);
+            }});
+        }
+        return groupedGraphs;
     }
 }

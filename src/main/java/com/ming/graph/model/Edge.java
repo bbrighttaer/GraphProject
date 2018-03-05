@@ -3,7 +3,7 @@ package com.ming.graph.model;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.ming.graph.util.GraphLoader.printProps;
+import static com.ming.graph.util.GraphUtils.printProps;
 
 /**
  * Author: bbrighttaer

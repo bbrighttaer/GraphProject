@@ -1,7 +1,7 @@
 package com.ming.graph.test;
 
 import ch.qos.logback.classic.Logger;
-import com.ming.graph.util.GraphLoader;
+import com.ming.graph.util.GraphUtils;
 import junit.framework.TestCase;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Assert;
@@ -33,7 +33,7 @@ public class DirCheck extends TestCase{
     }
 
     public void testGraphFilePaths(){
-        final List<String> data = GraphLoader.getFilePaths("data_coauthors");
+        final List<String> data = GraphUtils.getFilePaths("data_coauthors");
         StringBuilder bldr = new StringBuilder();
         for (int i = 0; i < data.size(); i++) {
             bldr.append(data.get(i)).append("\n");

@@ -1,4 +1,4 @@
-package com.ming.graph.fmwk;
+package com.ming.graph.api;
 
 /**
  * Author: bbrighttaer

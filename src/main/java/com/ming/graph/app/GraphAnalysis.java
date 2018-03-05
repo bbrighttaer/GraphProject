@@ -2,7 +2,8 @@ package com.ming.graph.app;
 
 
 import ch.qos.logback.classic.Logger;
-import com.ming.graph.fmwk.IGraphAnalysis;
+import com.ming.graph.api.IGraphAnalysis;
+import com.ming.graph.config.Constants;
 import com.ming.graph.impl.DataMining;
 import com.ming.graph.model.Edge;
 import com.ming.graph.model.Node;
@@ -16,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static com.ming.graph.config.Constants.GRAPH_METADATA_MAP;
 import static com.ming.graph.config.Constants.RAND_GEN_SEED;
-import static com.ming.graph.config.Constants.graphMetadataMap;
 
 /**
  * Author: bbrighttaer
@@ -34,12 +35,22 @@ public class GraphAnalysis implements IGraphAnalysis {
     private String currentEvGraphName;
     private List<Edge> edgeList;
     private Random rand;
+    private int count = 0;
+    private boolean printLog;
+    private String graphTitle;
 
-    public GraphAnalysis(List<Graph<Node, Edge>> evolveGraphList) {
+    public GraphAnalysis(List<Graph<Node, Edge>> evolveGraphList, boolean printLog) {
+        this(evolveGraphList, null, printLog);
+    }
+
+    public GraphAnalysis(List<Graph<Node, Edge>> evolveGraphList, String graphTitle, boolean printLog) {
+        this.printLog = printLog;
+        this.graphTitle = graphTitle;
         this.initialGraph = new UndirectedSparseGraph<>();
         this.evolveGraphList = evolveGraphList;
-        this.dataMining = new DataMining();
-        currentEvolveGraph = evolveGraphList.remove(0);
+        this.dataMining = new DataMining(printLog);
+        currentEvolveGraph = evolveGraphList.get(count);
+        ++count;
         edgeList = new ArrayList<>(currentEvolveGraph.getEdges());
         this.rand = new Random(RAND_GEN_SEED);
     }
@@ -56,18 +67,25 @@ public class GraphAnalysis implements IGraphAnalysis {
     public void evolveGraph() {
         if (edgeList.size() > 0) {
             setCurrentEvGraphName();
-            log.info("current graph for evolution: {}, vertices count = {}, edges count = {}, edgeList = {}",
-                    currentEvGraphName, currentEvolveGraph.getVertexCount(),
-                    currentEvolveGraph.getEdgeCount(), edgeList.size());
+            if (printLog)
+                log.info("current graph for evolution: {}, vertices count = {}, edges count = {}, edgeList = {}",
+                        currentEvGraphName, currentEvolveGraph.getVertexCount(),
+                        currentEvolveGraph.getEdgeCount(), edgeList.size());
             performInfoEvolution();
-        } else if (evolveGraphList.size() > 0) {
-            currentEvolveGraph = evolveGraphList.remove(0);
+        } else if (count < evolveGraphList.size()) {
+            currentEvolveGraph = evolveGraphList.get(count);
+            ++count;
             edgeList = new ArrayList<>(currentEvolveGraph.getEdges());
             currentEvGraphName = null;
             setCurrentEvGraphName();
-            log.info("Switched to: {}", currentEvGraphName);
+            if (printLog)
+                log.info("Switched to: {}", currentEvGraphName);
             evolveGraph();
-        } else log.info("Information Graph evolution finished");
+        } else {
+            if (printLog)
+                log.info("Information Graph evolution finished");
+            Constants.SIM_OVER = true;
+        }
     }
 
     private void performInfoEvolution() {
@@ -90,7 +108,7 @@ public class GraphAnalysis implements IGraphAnalysis {
 
     private void setCurrentEvGraphName() {
         if (StringUtils.isEmpty(currentEvGraphName)) {
-            currentEvGraphName = graphMetadataMap.get(currentEvolveGraph);
+            currentEvGraphName = GRAPH_METADATA_MAP.get(currentEvolveGraph);
             if (currentEvGraphName == null)
                 throw new RuntimeException("Graph name ID is not set or does not exist in the graph");
         }
@@ -103,11 +121,15 @@ public class GraphAnalysis implements IGraphAnalysis {
 
     @Override
     public void showUI(String title) {
-        dataMining.visualizeGraph(initialGraph, title);
+        dataMining.visualizeGraph(initialGraph, (this.graphTitle != null) ? graphTitle : title);
     }
 
     @Override
     public void updateUI() {
         dataMining.getVisViewer().repaint();
+    }
+
+    public DataMining getDataMining() {
+        return dataMining;
     }
 }
