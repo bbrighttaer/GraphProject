@@ -116,6 +116,6 @@ public class GraphTest extends TestCase {
         } catch (ParserConfigurationException |SAXException | IOException e) {
             log.error(e.getMessage());
         }
-        new DataMining().computeDegreeDistribution(graphList.get(0));
+        new DataMining(true).computeDegreeDistribution(graphList.get(0));
     }
 }

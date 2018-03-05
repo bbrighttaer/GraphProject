@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 /**
  * Author: bbrighttaer
@@ -14,34 +15,35 @@ import java.awt.event.ActionListener;
  * Time: 1:47 PM
  * Project: GraphProject
  */
-public class DecisionRound implements ActionListener{
+public class DecisionRound implements ActionListener {
     private static Logger log = (Logger) LoggerFactory.getLogger(DecisionRound.class);
-    final private IGraphAnalysis ga;
+    final private List<IGraphAnalysis> ga;
     private int tsCount = 0;
 
-    public DecisionRound(IGraphAnalysis ga) {
-        this.ga = ga;
+    public DecisionRound(List<IGraphAnalysis> analysisList) {
+        this.ga = analysisList;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(tsCount == 0){
-            ga.showUI("Complex Graph Analysis");
+        if (tsCount == 0) {
+            ga.forEach(g -> g.showUI("Main Complex Graph Evolution Process"));
             tsCount++;
         }
         /**
          *
          */
-        ga.printNodeStatistics();
+        ga.forEach(g -> g.printNodeStatistics());
 
         /**
          *
          */
-        ga.evolveGraph();
+        ga.forEach(g -> g.evolveGraph());
 
         /**
          *
          */
-        ga.updateUI();
+        ga.forEach(g -> g.updateUI());
+        ++tsCount;
     }
 }

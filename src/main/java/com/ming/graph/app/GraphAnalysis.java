@@ -36,11 +36,19 @@ public class GraphAnalysis implements IGraphAnalysis {
     private List<Edge> edgeList;
     private Random rand;
     private int count = 0;
+    private boolean printLog;
+    private String graphTitle;
 
-    public GraphAnalysis(List<Graph<Node, Edge>> evolveGraphList) {
+    public GraphAnalysis(List<Graph<Node, Edge>> evolveGraphList, boolean printLog) {
+        this(evolveGraphList, null, printLog);
+    }
+
+    public GraphAnalysis(List<Graph<Node, Edge>> evolveGraphList, String graphTitle, boolean printLog) {
+        this.printLog = printLog;
+        this.graphTitle = graphTitle;
         this.initialGraph = new UndirectedSparseGraph<>();
         this.evolveGraphList = evolveGraphList;
-        this.dataMining = new DataMining();
+        this.dataMining = new DataMining(printLog);
         currentEvolveGraph = evolveGraphList.get(count);
         ++count;
         edgeList = new ArrayList<>(currentEvolveGraph.getEdges());
@@ -59,9 +67,10 @@ public class GraphAnalysis implements IGraphAnalysis {
     public void evolveGraph() {
         if (edgeList.size() > 0) {
             setCurrentEvGraphName();
-            log.info("current graph for evolution: {}, vertices count = {}, edges count = {}, edgeList = {}",
-                    currentEvGraphName, currentEvolveGraph.getVertexCount(),
-                    currentEvolveGraph.getEdgeCount(), edgeList.size());
+            if (printLog)
+                log.info("current graph for evolution: {}, vertices count = {}, edges count = {}, edgeList = {}",
+                        currentEvGraphName, currentEvolveGraph.getVertexCount(),
+                        currentEvolveGraph.getEdgeCount(), edgeList.size());
             performInfoEvolution();
         } else if (count < evolveGraphList.size()) {
             currentEvolveGraph = evolveGraphList.get(count);
@@ -69,10 +78,12 @@ public class GraphAnalysis implements IGraphAnalysis {
             edgeList = new ArrayList<>(currentEvolveGraph.getEdges());
             currentEvGraphName = null;
             setCurrentEvGraphName();
-            log.info("Switched to: {}", currentEvGraphName);
+            if (printLog)
+                log.info("Switched to: {}", currentEvGraphName);
             evolveGraph();
         } else {
-            log.info("Information Graph evolution finished");
+            if (printLog)
+                log.info("Information Graph evolution finished");
             Constants.SIM_OVER = true;
         }
     }
@@ -110,7 +121,7 @@ public class GraphAnalysis implements IGraphAnalysis {
 
     @Override
     public void showUI(String title) {
-        dataMining.visualizeGraph(initialGraph, title);
+        dataMining.visualizeGraph(initialGraph, (this.graphTitle != null) ? graphTitle : title);
     }
 
     @Override

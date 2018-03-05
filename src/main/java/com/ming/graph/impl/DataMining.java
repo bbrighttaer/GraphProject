@@ -51,21 +51,19 @@ public class DataMining implements IDataMining {
     private Supplier<Edge> edgeFactory;
     private Node maxInDegreeNode;
     private Node maxOutDegreeNode;
+    private boolean printLog;
 
     /**
      * the visual component and renderer for the graph
      */
     VisualizationViewer<Node, Edge> visViewer;
 
-    public DataMining() {
+    public DataMining(boolean printLog) {
+        this.printLog = printLog;
     }
 
     @Override
     public void generalInfo(Graph<Node, Edge> graph) {
-        //number of vertices and edges
-        System.out.println(String.format("Edge count: %d, Vertex count: %d", graph.getEdgeCount(),
-                graph.getVertexCount()));
-
         //in and out degrees
         Collection<Node> vertices = graph.getVertices();
         int maxInDegree = 0;
@@ -82,27 +80,34 @@ public class DataMining implements IDataMining {
                 this.maxOutDegreeNode = v;
             }
         }
-        System.out.println("Max in-degree: " + maxInDegree + ", vertexID: " + this.maxInDegreeNode);
-        System.out.println("Max out-degree: " + maxOutDegree + ", vertexID: " + this.maxOutDegreeNode);
+        if (printLog) {
+            System.out.println(String.format("Edge count: %d, Vertex count: %d", graph.getEdgeCount(),
+                    graph.getVertexCount()));
+            System.out.println("Max in-degree: " + maxInDegree + ", vertexID: " + this.maxInDegreeNode);
+            System.out.println("Max out-degree: " + maxOutDegree + ", vertexID: " + this.maxOutDegreeNode);
+        }
     }
 
     @Override
     public void rankingAnalysis(Graph<Node, Edge> graph) {
         //BetweennessCentrality
-        System.out.println("---- BetweennessCentrality Ranking ----");
+        if (printLog)
+            System.out.println("---- BetweennessCentrality Ranking ----");
         BetweennessCentrality bCentrality = new BetweennessCentrality(graph, true, false);
         bCentrality.evaluate();
         bCentrality.printRankings(true, true);
 
         //PageRank
-        System.out.println("---- PageRank ranking ----");
+        if (printLog)
+            System.out.println("---- PageRank ranking ----");
         final PageRank pageRank = new PageRank(graph, .1);
         pageRank.evaluate();
         final List pageRankVertices = new ArrayList(graph.getVertices());
         pageRankSorting(pageRank, pageRankVertices);
 
         //PageRank with Priors
-        System.out.println("---- PageRank with Priors -----");
+        if (printLog)
+            System.out.println("---- PageRank with Priors -----");
         PageRankWithPriors pageRankWithPriors = new PageRankWithPriors(graph, o -> getDoubleVal(pageRankVertices.get(0)), 0.1);
         pageRankWithPriors.evaluate();
         final List pageRankWithPriorsVertices = new ArrayList(graph.getVertices());
@@ -256,9 +261,11 @@ public class DataMining implements IDataMining {
         graph.getVertices().forEach(node -> degDist.add(graph.getInEdges(node).size()));
         Collections.sort(degDist, (o1, o2) -> Integer.compare(o2, o1));//descending order
         TextCsvLine line = new TextCsvLine();
-        degDist.forEach(integer ->line.addText(new Text(integer)));
+        degDist.forEach(integer -> line.addText(new Text(integer)));
         IFilePersistence persistence = new FilePersistenceCSV(new File(Constants.DATA_DIR + "degreeDist.csv"));
-        persistence.saveLinesToFile(new ArrayList<TextCsvLine>(){{add(line);}}, false);
+        persistence.saveLinesToFile(new ArrayList<TextCsvLine>() {{
+            add(line);
+        }}, false);
     }
 
     public void computePerYearData(List<Graph<Node, Edge>> graphList) {
@@ -276,6 +283,30 @@ public class DataMining implements IDataMining {
                 .addText(new Text(countEdges(gList)))
                 .addText(new Text(countVertices(gList)))));
         IFilePersistence persistence = new FilePersistenceCSV(new File(Constants.DATA_DIR + "perYearInfo.csv"));
+        persistence.saveLinesToFile(lines, false);
+    }
+
+    public void computeAccumulatedPerYearData(List<Graph<Node, Edge>> graphList) {
+        List<TextCsvLine> lines = new ArrayList<TextCsvLine>() {{
+            //line 1 [headers]
+            add(new TextCsvLine()
+                    .addText(new Text("Year"))
+                    .addText(new Text("Total number of vertices"))
+                    .addText(new Text("Total number of links"))
+                    .addText(new Text("Total number of vertices")));
+        }};
+        final SortedMap<Integer, List<Graph<Node, Edge>>> groupGraphs = GraphUtils.groupGraphsIntoYears(graphList);
+        final Integer[] keys = new Integer[groupGraphs.keySet().size()];
+        groupGraphs.keySet().toArray(keys);
+        for (int i = 0; i < groupGraphs.size(); i++) {
+            lines.add(new TextCsvLine()
+                    .addText(new Text(keys[i]))
+                    .addText(new Text(countEdges(groupGraphs.get(keys[i]))
+                            + (((i - 1) >= 0) ? countEdges(groupGraphs.get(keys[i-1])) : 0)))
+                    .addText(new Text(countVertices(groupGraphs.get(keys[i]))
+                            + (((i - 1) >= 0) ? countVertices(groupGraphs.get(keys[i-1])) : 0))));
+        }
+        IFilePersistence persistence = new FilePersistenceCSV(new File(Constants.DATA_DIR + "accumulatedPerYearInfo.csv"));
         persistence.saveLinesToFile(lines, false);
     }
 

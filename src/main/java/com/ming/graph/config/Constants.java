@@ -27,4 +27,5 @@ public class Constants {
     public static boolean SIM_OVER = false;
     public static double NORMALIZATION_CONSTANT = 0.4;
     public static double POWER_LAW_ALPHA = 2;
+    public static Node MAX_IN_DEGREE_NODE, MAX_OUT_DEGREE_NODE;
 }
