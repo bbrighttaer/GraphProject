@@ -40,6 +40,7 @@ public class GraphAnalysis implements IGraphAnalysis {
     private boolean printLog;
     private String graphTitle;
     private boolean isMainGraphAnalysis;
+    private boolean isSubGraphShown;
 
     public GraphAnalysis(List<Graph<Node, Edge>> evolveGraphList, IEvolutionManager evManager) {
         this(evolveGraphList, null, evManager, true, true);
@@ -73,29 +74,34 @@ public class GraphAnalysis implements IGraphAnalysis {
 
     @Override
     public void evolveGraph() {
-        if (edgeList.size() > 0) {
-            setCurrentEvGraphName();
-            if (printLog)
-                log.info("current graph for evolution: {}, vertices count = {}, edges count = {}, edgeList = {}",
-                        currentEvGraphName, currentEvolveGraph.getVertexCount(),
-                        currentEvolveGraph.getEdgeCount(), edgeList.size());
-            performInfoEvolution();
-        } else if (count < evolveGraphList.size()) {
-            currentEvolveGraph = evolveGraphList.get(count);
-            ++count;
-            edgeList = new ArrayList<>(currentEvolveGraph.getEdges());
-            currentEvGraphName = null;
-            setCurrentEvGraphName();
-            if (printLog)
-                log.info("Switched to: {}", currentEvGraphName);
-            evolveGraph();
-        } else {
-            if (printLog)
-                log.info("Information Graph evolution finished");
-            if (isMainGraphAnalysis) {
-                Constants.SIM_OVER = true;
-                SIM_TIMER.stop();
-                if (evManager != null) evManager.afterEvolution(this);
+        for (int i = 0; i < Constants.GROWING_RATE; i++) {
+            if (edgeList.size() > 0) {
+                setCurrentEvGraphName();
+                if (printLog)
+                    log.info("current graph for evolution: {}, vertices count = {}, edges count = {}, edgeList = {}",
+                            currentEvGraphName, currentEvolveGraph.getVertexCount(),
+                            currentEvolveGraph.getEdgeCount(), edgeList.size());
+                performInfoEvolution();
+            } else if (count < evolveGraphList.size()) {
+                currentEvolveGraph = evolveGraphList.get(count);
+                ++count;
+                edgeList = new ArrayList<>(currentEvolveGraph.getEdges());
+                currentEvGraphName = null;
+                setCurrentEvGraphName();
+                if (printLog)
+                    log.info("Switched to: {}", currentEvGraphName);
+                evolveGraph();
+            } else {
+                if (printLog)
+                    log.info("Information Graph evolution finished");
+                if (isMainGraphAnalysis) {
+                    Constants.SIM_OVER = true;
+                    SIM_TIMER.stop();
+                    if (evManager != null && !isSubGraphShown){
+                        evManager.afterEvolution(this);
+                        isSubGraphShown = true;
+                    }
+                }
             }
         }
     }

@@ -15,10 +15,11 @@ import java.util.Map;
  * Project: GraphProject
  */
 public class Constants {
+    public static final int GROWING_RATE = 5;
     public static Map<Graph<Node, Edge>, String> GRAPH_METADATA_MAP = new HashMap<>();
     public static final String GRAPH_XSD_PKG = "com.ming.graph.xsd";
     public static final Map<String, String> GRAPH_KEYS = new HashMap<>();
-    public static final String GRAPH_FOLDER_NAME = "wos_test";
+    public static final String GRAPH_FOLDER_NAME = "wos";
     public static final int BASE_GRAPH_INDEX = 0;
     public static final int RAND_GEN_SEED = 32;
     public static final String AUTHOR_JOURNAL_ID = "ayjid";

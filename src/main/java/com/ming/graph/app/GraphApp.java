@@ -68,7 +68,7 @@ public class GraphApp {
         final SortedMap<Integer, List<Graph<Node, Edge>>> graphsIntoYears = GraphUtils.groupGraphsIntoYears(graphList);
         final List<Integer> yrsSet = new ArrayList<>(graphsIntoYears.keySet());
         SortedMap<Integer, List<Graph<Node, Edge>>> topkGraphs = new TreeMap<>();
-        for (int i = graphsIntoYears.size() - 1; i > (graphsIntoYears.size() - 2); i--) {
+        for (int i = graphsIntoYears.size() - 1; i > (graphsIntoYears.size() - 5); i--) {
             topkGraphs.put(yrsSet.get(i), graphsIntoYears.get(yrsSet.get(i)));
         }
         List<IGraphAnalysis> graphAnalysisList = new ArrayList<>();
