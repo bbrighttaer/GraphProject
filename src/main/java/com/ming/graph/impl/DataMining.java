@@ -25,7 +25,10 @@ import edu.uci.ics.jung.algorithms.shortestpath.BFSDistanceLabeler;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraShortestPath;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.SparseMultigraph;
+import edu.uci.ics.jung.graph.UndirectedSparseGraph;
+import edu.uci.ics.jung.visualization.DefaultVisualizationModel;
 import edu.uci.ics.jung.visualization.GraphZoomScrollPane;
+import edu.uci.ics.jung.visualization.VisualizationModel;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.*;
 import edu.uci.ics.jung.visualization.renderers.BasicVertexLabelRenderer;
@@ -127,6 +130,11 @@ public class DataMining implements IDataMining {
 
     @Override
     public void clustering(Graph<Node, Edge> graph) {
+        edgeBetweeness(graph);
+        weaklyConnectedComponents(graph);
+    }
+
+    public void edgeBetweeness(Graph<Node, Edge> graph) {
         //EdgeBetweenness
         System.out.println("------ EdgeBetweenness Clustering ----");
         EdgeBetweennessClusterer betweennessClusterer = new EdgeBetweennessClusterer(200);
@@ -137,17 +145,36 @@ public class DataMining implements IDataMining {
             Set cluster = (Set) clusters[i];
             System.out.println(Arrays.asList(cluster.toArray()) + ", size: " + cluster.size());
         }
+    }
 
+    public Set<Set> weaklyConnectedComponents(Graph<Node, Edge> graph) {
         //WCC
-        System.out.println("------ Weakely Connected Component (WCC) Clustering ----");
+//        System.out.println("------ Weakely Connected Component (WCC) Clustering ----");
         WeakComponentClusterer wcc = new WeakComponentClusterer();
-        Object[] wccClusters = wcc.apply(graph).toArray();
-        System.out.println("Number of WCC clusters: " + wccClusters.length);
-        for (int i = 0; i < wccClusters.length; i++) {
-            System.out.println(String.format("---- Cluster %d ---", (i + 1)));
-            Set cluster = (Set) wccClusters[i];
-            System.out.println(Arrays.asList(cluster.toArray()));
+//        Object[] wccClusters = wcc.apply(graph).toArray();
+//        System.out.println("Number of WCC clusters: " + wccClusters.length);
+//        for (int i = 0; i < wccClusters.length; i++) {
+//            System.out.println(String.format("---- Cluster %d ---", (i + 1)));
+//            Set cluster = (Set) wccClusters[i];
+//            System.out.println("size = " + cluster.size());
+//            System.out.println(Arrays.asList(cluster.toArray()));
+//        }
+        return wcc.apply(graph);
+    }
+
+    @Override
+    public Graph<Node, Edge> getBiggestSubGraph(Graph<Node, Edge> graph) {
+        final Set<Set> clusters = weaklyConnectedComponents(graph);
+        Set maxCluster = new HashSet();
+        for (Set cluster : clusters) {
+            if (cluster.size() > maxCluster.size())
+                maxCluster = cluster;
         }
+        Graph<Node, Edge> subGraph = new UndirectedSparseGraph<>();
+        Set<Edge> subGraphEdgeSet = new HashSet<>();
+        maxCluster.forEach(n -> subGraphEdgeSet.addAll(graph.getIncidentEdges((Node) n)));
+        subGraphEdgeSet.forEach(edge -> subGraph.addEdge(edge, graph.getIncidentVertices(edge)));
+        return subGraph;
     }
 
     @Override
@@ -257,14 +284,29 @@ public class DataMining implements IDataMining {
 
     @Override
     public void computeDegreeDistribution(Graph<Node, Edge> graph) {
-        List<Integer> degDist = new ArrayList<>();
-        graph.getVertices().forEach(node -> degDist.add(graph.getInEdges(node).size()));
-        Collections.sort(degDist, (o1, o2) -> Integer.compare(o2, o1));//descending order
+        int numNodes = graph.getVertexCount();
+        Map<Integer, Degree> degDistMap = new HashMap<>();
+//        for (int i = 1; i < numNodes; i++)
+//            degDistMap.put(i, new Degree());
+        for (Node node : graph.getVertices()) {
+            final int degree = graph.getIncidentEdges(node).size();
+            if (degDistMap.containsKey(degree))
+                degDistMap.get(degree).increment();
+            else degDistMap.put(degree, new Degree().increment());
+        }
+        TextCsvLine lineX = new TextCsvLine();
         TextCsvLine line = new TextCsvLine();
-        degDist.forEach(integer -> line.addText(new Text(integer)));
+        TextCsvLine lineProb = new TextCsvLine();
+        degDistMap.forEach((x, d) -> {
+            lineX.addText(new Text(x));
+            line.addText(new Text(d.get()));
+            lineProb.addText(new Text(((double) d.get()) / numNodes));
+        });
         IFilePersistence persistence = new FilePersistenceCSV(new File(Constants.DATA_DIR + "degreeDist.csv"));
         persistence.saveLinesToFile(new ArrayList<TextCsvLine>() {{
+            add(lineX);
             add(line);
+            add(lineProb);
         }}, false);
     }
 
@@ -302,9 +344,9 @@ public class DataMining implements IDataMining {
             lines.add(new TextCsvLine()
                     .addText(new Text(keys[i]))
                     .addText(new Text(countEdges(groupGraphs.get(keys[i]))
-                            + (((i - 1) >= 0) ? countEdges(groupGraphs.get(keys[i-1])) : 0)))
+                            + (((i - 1) >= 0) ? countEdges(groupGraphs.get(keys[i - 1])) : 0)))
                     .addText(new Text(countVertices(groupGraphs.get(keys[i]))
-                            + (((i - 1) >= 0) ? countVertices(groupGraphs.get(keys[i-1])) : 0))));
+                            + (((i - 1) >= 0) ? countVertices(groupGraphs.get(keys[i - 1])) : 0))));
         }
         IFilePersistence persistence = new FilePersistenceCSV(new File(Constants.DATA_DIR + "accumulatedPerYearInfo.csv"));
         persistence.saveLinesToFile(lines, false);
@@ -335,11 +377,13 @@ public class DataMining implements IDataMining {
 
     @Override
     public void visualizeGraph(final Graph<Node, Edge> graph, String title) {
+        final Dimension dimension = new Dimension(1200, 1050);
         // create a simple graph for the demo
         final Layout<Node, Edge> layout = new SpringLayout<>(graph);
-        layout.setSize(new Dimension(1000, 1000));
-        visViewer = new VisualizationViewer<>(layout);
-        visViewer.setPreferredSize(new Dimension(1200, 1050));
+        //layout.setSize(dimension);
+        VisualizationModel<Node, Edge> visModel = new DefaultVisualizationModel<>(layout, dimension);
+        visViewer = new VisualizationViewer<>(visModel);
+        visViewer.setPreferredSize(dimension);
 
         //Renderer options
         visViewer.getRenderer().setVertexRenderer(new BasicVertexRenderer<>());
