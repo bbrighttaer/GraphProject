@@ -1,12 +1,15 @@
 package com.ming.graph.test;
 
 import ch.qos.logback.classic.Logger;
+import com.ming.graph.api.IDataMining;
 import com.ming.graph.config.Constants;
 import com.ming.graph.impl.DataMining;
 import com.ming.graph.model.Edge;
 import com.ming.graph.model.Node;
 import com.ming.graph.util.GraphUtils;
 import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.UndirectedGraph;
+import edu.uci.ics.jung.graph.UndirectedSparseGraph;
 import junit.framework.TestCase;
 import org.junit.Assert;
 import org.slf4j.LoggerFactory;
@@ -18,9 +21,7 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -118,4 +119,42 @@ public class GraphTest extends TestCase {
         }
         new DataMining(true).computeDegreeDistribution(graphList.get(0));
     }
+
+    public void testUndirectedGraphDeg(){
+        UndirectedGraph<Node, Edge> graph = new UndirectedSparseGraph<>();
+        final Node v1 = new Node();
+        final Node v2 = new Node();
+        final Node v3 = new Node();
+        graph.addEdge(new Edge(), v1, v2);
+        graph.addEdge(new Edge(), v1, v3);
+        System.out.println("v1 InEdges = "+graph.getInEdges(v1).size());
+        System.out.println("v1 outEdges = "+graph.getOutEdges(v1).size());
+        System.out.println("v1 IncidentEdges = "+graph.getIncidentEdges(v1).size());
+    }
+
+    public void testSubGraph(){
+        final List<String> graphPaths = GraphUtils.getFilePaths(Constants.GRAPH_FOLDER_NAME);
+        setkeys(graphPaths, false);
+        List<Graph<Node, Edge>> graphList = new ArrayList<>();
+        try {
+            graphList.add(GraphUtils.getGraph(graphPaths.get(0)));
+        } catch (ParserConfigurationException |SAXException | IOException e) {
+            log.error(e.getMessage());
+        }
+        final DataMining dataMining = new DataMining(false);
+        final Set<Set> sets = dataMining.weaklyConnectedComponents(graphList.get(0));
+        final Graph<Node, Edge> subgraph = dataMining.getBiggestSubGraph(graphList.get(0));
+        Set maxCluster = new HashSet();
+        for (Set cluster : sets) {
+            if (cluster.size() > maxCluster.size())
+                maxCluster = cluster;
+        }
+        Assert.assertEquals(maxCluster.size(), subgraph.getVertexCount());
+        System.out.println("max cluster size = "+ maxCluster.size());
+        System.out.println("sub-graph node size = "+ subgraph.getVertexCount());
+        new DataMining(false).visualizeGraph(graphList.get(0), "main graph");
+        dataMining.visualizeGraph(subgraph, "largest sub-graph");
+        while (true){}
+    }
+
 }

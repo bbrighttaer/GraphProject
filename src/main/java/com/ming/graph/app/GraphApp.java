@@ -2,6 +2,7 @@ package com.ming.graph.app;
 
 import ch.qos.logback.classic.Logger;
 import com.ming.graph.api.IGraphAnalysis;
+import com.ming.graph.impl.DataMining;
 import com.ming.graph.impl.DecisionRound;
 import com.ming.graph.model.Edge;
 import com.ming.graph.model.Node;
@@ -31,7 +32,7 @@ public class GraphApp {
     private static Logger log = (Logger) LoggerFactory.getLogger(GraphApp.class);
 
     public static void main(String[] args) {
-        Timer loadingTimer, simTimer;
+        Timer loadingTimer;
         loadingTimer = new Timer(3000, e -> log.info("Loading graphs..."));
         loadingTimer.start();
         final List<String> graphPaths = GraphUtils.getFilePaths(GRAPH_FOLDER_NAME);
@@ -47,28 +48,31 @@ public class GraphApp {
             }
         });
         loadingTimer.stop();
-        final GraphAnalysis main_graph_analysis = new GraphAnalysis(graphList, true);
+        final GraphAnalysis main_graph_analysis = new GraphAnalysis(graphList, ga -> {
+            ga.getDataMining().computeDegreeDistribution(ga.getInitialGraph());
+            final Graph<Node, Edge> biggestSubGraph = ga.getDataMining()
+                    .getBiggestSubGraph(ga.getInitialGraph());
+            new DataMining(false).visualizeGraph(biggestSubGraph, "Biggest sub-graph");
+        });
         new Thread(() -> main_graph_analysis.getDataMining().computeFeatures(graphList)).start();
         new Thread(() -> main_graph_analysis.getDataMining().computePerYearData(graphList)).start();
         new Thread(() -> main_graph_analysis.getDataMining().computeAccumulatedPerYearData(graphList)).start();
         final List<IGraphAnalysis> analysisList = formPerYearEvolution(graphList);
         analysisList.add(main_graph_analysis);
-        simTimer = new Timer(1000, new DecisionRound(analysisList));
-        simTimer.start();
-        while (!SIM_OVER) {
-        }
-        main_graph_analysis.getDataMining().computeDegreeDistribution(main_graph_analysis.getInitialGraph());
+        SIM_TIMER = new Timer(100, new DecisionRound(analysisList));
+        SIM_TIMER.start();
+        while (!SIM_OVER){}
     }
 
     private static List<IGraphAnalysis> formPerYearEvolution(List<Graph<Node, Edge>> graphList) {
         final SortedMap<Integer, List<Graph<Node, Edge>>> graphsIntoYears = GraphUtils.groupGraphsIntoYears(graphList);
         final List<Integer> yrsSet = new ArrayList<>(graphsIntoYears.keySet());
         SortedMap<Integer, List<Graph<Node, Edge>>> topkGraphs = new TreeMap<>();
-        for (int i = graphsIntoYears.size() - 1; i > (graphsIntoYears.size() - 5); i--) {
+        for (int i = graphsIntoYears.size() - 1; i > (graphsIntoYears.size() - 2); i--) {
             topkGraphs.put(yrsSet.get(i), graphsIntoYears.get(yrsSet.get(i)));
         }
         List<IGraphAnalysis> graphAnalysisList = new ArrayList<>();
-        topkGraphs.forEach((yr, gList) -> graphAnalysisList.add(new GraphAnalysis(gList, "Year: " + yr.intValue(), false)));
+        topkGraphs.forEach((yr, gList) -> graphAnalysisList.add(new GraphAnalysis(gList, "Year: " + yr.intValue())));
         return graphAnalysisList;
     }
 }

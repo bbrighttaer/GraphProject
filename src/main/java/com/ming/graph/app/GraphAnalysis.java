@@ -2,6 +2,7 @@ package com.ming.graph.app;
 
 
 import ch.qos.logback.classic.Logger;
+import com.ming.graph.api.IEvolutionManager;
 import com.ming.graph.api.IGraphAnalysis;
 import com.ming.graph.config.Constants;
 import com.ming.graph.impl.DataMining;
@@ -17,8 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static com.ming.graph.config.Constants.GRAPH_METADATA_MAP;
-import static com.ming.graph.config.Constants.RAND_GEN_SEED;
+import static com.ming.graph.config.Constants.*;
 
 /**
  * Author: bbrighttaer
@@ -31,6 +31,7 @@ public class GraphAnalysis implements IGraphAnalysis {
     private final Graph<Node, Edge> initialGraph;
     private final List<Graph<Node, Edge>> evolveGraphList;
     private final DataMining dataMining;
+    private final IEvolutionManager evManager;
     private Graph<Node, Edge> currentEvolveGraph;
     private String currentEvGraphName;
     private List<Edge> edgeList;
@@ -38,13 +39,20 @@ public class GraphAnalysis implements IGraphAnalysis {
     private int count = 0;
     private boolean printLog;
     private String graphTitle;
+    private boolean isMainGraphAnalysis;
 
-    public GraphAnalysis(List<Graph<Node, Edge>> evolveGraphList, boolean printLog) {
-        this(evolveGraphList, null, printLog);
+    public GraphAnalysis(List<Graph<Node, Edge>> evolveGraphList, IEvolutionManager evManager) {
+        this(evolveGraphList, null, evManager, true, true);
     }
 
-    public GraphAnalysis(List<Graph<Node, Edge>> evolveGraphList, String graphTitle, boolean printLog) {
+    public GraphAnalysis(List<Graph<Node, Edge>> evolveGraphList, String graphTitle) {
+        this(evolveGraphList, graphTitle, null, false, false);
+    }
+
+    public GraphAnalysis(List<Graph<Node, Edge>> evolveGraphList, String graphTitle, IEvolutionManager evMan, boolean isMainGraphAnalysis, boolean printLog) {
+        this.evManager = evMan;
         this.printLog = printLog;
+        this.isMainGraphAnalysis = isMainGraphAnalysis;
         this.graphTitle = graphTitle;
         this.initialGraph = new UndirectedSparseGraph<>();
         this.evolveGraphList = evolveGraphList;
@@ -84,7 +92,11 @@ public class GraphAnalysis implements IGraphAnalysis {
         } else {
             if (printLog)
                 log.info("Information Graph evolution finished");
-            Constants.SIM_OVER = true;
+            if (isMainGraphAnalysis) {
+                Constants.SIM_OVER = true;
+                SIM_TIMER.stop();
+                if (evManager != null) evManager.afterEvolution(this);
+            }
         }
     }
 
