@@ -8,25 +8,19 @@
 
 package com.ming.graph.xsd;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
- * 
- *       Complex type for the <key> element.
- *     
- * 
+ * Complex type for the <key> element.
+ * <p>
+ * <p>
  * <p>Java class for key.type complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="key.type"&gt;
  *   &lt;complexContent&gt;
@@ -42,13 +36,11 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "key.type", propOrder = {
-    "desc",
-    "_default"
+        "desc",
+        "_default"
 })
 public class KeyType {
 
@@ -69,11 +61,9 @@ public class KeyType {
 
     /**
      * Gets the value of the desc property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getDesc() {
         return desc;
@@ -81,11 +71,9 @@ public class KeyType {
 
     /**
      * Sets the value of the desc property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setDesc(String value) {
         this.desc = value;
@@ -93,11 +81,9 @@ public class KeyType {
 
     /**
      * Gets the value of the default property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link DefaultType }
-     *     
+     *
+     * @return possible object is
+     * {@link DefaultType }
      */
     public DefaultType getDefault() {
         return _default;
@@ -105,11 +91,9 @@ public class KeyType {
 
     /**
      * Sets the value of the default property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link DefaultType }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link DefaultType }
      */
     public void setDefault(DefaultType value) {
         this._default = value;
@@ -117,11 +101,9 @@ public class KeyType {
 
     /**
      * Gets the value of the id property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getId() {
         return id;
@@ -129,11 +111,9 @@ public class KeyType {
 
     /**
      * Sets the value of the id property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setId(String value) {
         this.id = value;
@@ -141,11 +121,9 @@ public class KeyType {
 
     /**
      * Gets the value of the for property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link KeyForType }
-     *     
+     *
+     * @return possible object is
+     * {@link KeyForType }
      */
     public KeyForType getFor() {
         if (_for == null) {
@@ -157,11 +135,9 @@ public class KeyType {
 
     /**
      * Sets the value of the for property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link KeyForType }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link KeyForType }
      */
     public void setFor(KeyForType value) {
         this._for = value;
@@ -169,11 +145,9 @@ public class KeyType {
 
     /**
      * Gets the value of the attrName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getAttrName() {
         return attrName;
@@ -181,11 +155,9 @@ public class KeyType {
 
     /**
      * Sets the value of the attrName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setAttrName(String value) {
         this.attrName = value;
@@ -193,11 +165,9 @@ public class KeyType {
 
     /**
      * Gets the value of the attrType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link KeyTypeType }
-     *     
+     *
+     * @return possible object is
+     * {@link KeyTypeType }
      */
     public KeyTypeType getAttrType() {
         return attrType;
@@ -205,11 +175,9 @@ public class KeyType {
 
     /**
      * Sets the value of the attrType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link KeyTypeType }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link KeyTypeType }
      */
     public void setAttrType(KeyTypeType value) {
         this.attrType = value;

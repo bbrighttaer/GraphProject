@@ -14,17 +14,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * 
- *       Complex type for the <default> element.
- *       default.type is mixed, that is, data may contain #PCDATA.
- *       Content type: extension of data-extension.type which is empty
- *                     per default.
- *     
- * 
+ * Complex type for the <default> element.
+ * default.type is mixed, that is, data may contain #PCDATA.
+ * Content type: extension of data-extension.type which is empty
+ * per default.
+ * <p>
+ * <p>
  * <p>Java class for default.type complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="default.type"&gt;
  *   &lt;complexContent&gt;
@@ -34,14 +33,11 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "default.type")
 public class DefaultType
-    extends DataExtensionType
-{
+        extends DataExtensionType {
 
 
 }

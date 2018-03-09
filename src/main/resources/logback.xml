@@ -7,46 +7,46 @@ and open the template in the editor.
 
 <configuration>
     <!-- Stop output INFO at start -->
-    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
 
-    <property name="DEV_HOME" value="c:/logs" />
- 
+    <property name="DEV_HOME" value="c:/logs"/>
+
     <appender name="toConsole" class="ch.qos.logback.core.ConsoleAppender">
         <layout class="ch.qos.logback.classic.PatternLayout">
-                <Pattern>
-                        %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
-                </Pattern>
+            <Pattern>
+                %d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n
+            </Pattern>
 
             <!-- do not print pattern as a header -->
             <outputPatternAsPresentationHeader>false</outputPatternAsPresentationHeader>
         </layout>
     </appender>
- 
-    <appender name="toFile"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+    <appender name="toFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/debug.log</file>
-        
+
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>
-                    %d{yyyy-MM-dd HH:mm:ss} - %msg%n
+                %d{yyyy-MM-dd HH:mm:ss} - %msg%n
             </Pattern>
         </encoder>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!-- rollover daily -->
-            <fileNamePattern>logs/archived/debug.%d{yyyy-MM-dd}.%i.log </fileNamePattern>
-            <timeBasedFileNamingAndTriggeringPolicy  class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                    <maxFileSize>10MB</maxFileSize>
+            <fileNamePattern>logs/archived/debug.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
         </rollingPolicy>
 
     </appender>
- 
-    <appender name="FILE-ERROR"	class="ch.qos.logback.core.rolling.RollingFileAppender">
+
+    <appender name="FILE-ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/error.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-                <Pattern>
-                        %d{yyyy-MM-dd HH:mm:ss} - %msg%n
-                </Pattern>
+            <Pattern>
+                %d{yyyy-MM-dd HH:mm:ss} - %msg%n
+            </Pattern>
         </encoder>
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
@@ -59,15 +59,15 @@ and open the template in the editor.
         </rollingPolicy>
 
     </appender>
- 
+
     <!-- Send logs to both console and file audit -->
     <logger name="com.ming.graph" level="debug" additivity="false">
-            <!--<appender-ref ref="toFile" />-->
-            <appender-ref ref="toConsole" />
+        <!--<appender-ref ref="toFile" />-->
+        <appender-ref ref="toConsole"/>
     </logger>
 
     <root level="error">
-            <appender-ref ref="FILE-ERROR" />
+        <appender-ref ref="FILE-ERROR"/>
     </root>
- 
+
 </configuration>

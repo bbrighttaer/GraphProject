@@ -3,7 +3,6 @@ package com.ming.graph.app;
 import ch.qos.logback.classic.Logger;
 import com.ming.graph.api.IGraphAnalysis;
 import com.ming.graph.config.Constants;
-import com.ming.graph.impl.DataMining;
 import com.ming.graph.impl.DecisionRound;
 import com.ming.graph.impl.EvolutionManager;
 import com.ming.graph.model.Edge;
@@ -51,9 +50,6 @@ public class GraphApp {
         });
         loadingTimer.stop();
         final GraphAnalysis main_graph_analysis = new GraphAnalysis(graphList, new EvolutionManager());
-        new Thread(() -> main_graph_analysis.getDataMining().computeFeatures(graphList)).start();
-        new Thread(() -> main_graph_analysis.getDataMining().computePerYearData(graphList)).start();
-        new Thread(() -> main_graph_analysis.getDataMining().computeAccumulatedPerYearData(graphList)).start();
         final List<IGraphAnalysis> analysisList = formPerYearEvolution(graphList);
         analysisList.add(main_graph_analysis);
         SIM_TIMER = new Timer(Constants.EVOLUTION_DELAY, new DecisionRound(analysisList));
@@ -66,7 +62,7 @@ public class GraphApp {
         final SortedMap<Integer, List<Graph<Node, Edge>>> graphsIntoYears = GraphUtils.groupGraphsIntoYears(graphList);
         final List<Integer> yrsSet = new ArrayList<>(graphsIntoYears.keySet());
         SortedMap<Integer, List<Graph<Node, Edge>>> topkGraphs = new TreeMap<>();
-        for (int i = graphsIntoYears.size() - 1; i > (graphsIntoYears.size() - Constants.NUM_OF_SUB_GRAPH_FOR_VIS); i--) {
+        for (int i = graphsIntoYears.size() - 1; i > (graphsIntoYears.size() - (Constants.NUM_OF_SUB_GRAPH_FOR_VIS + 1)); i--) {
             topkGraphs.put(yrsSet.get(i), graphsIntoYears.get(yrsSet.get(i)));
         }
         List<IGraphAnalysis> graphAnalysisList = new ArrayList<>();

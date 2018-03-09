@@ -8,23 +8,18 @@
 
 package com.ming.graph.xsd;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.*;
 
 
 /**
- * 
- *       Complex type for the <locator> element.
- *       Content type: (empty)
- *     
- * 
+ * Complex type for the <locator> element.
+ * Content type: (empty)
+ * <p>
+ * <p>
  * <p>Java class for locator.type complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="locator.type"&gt;
  *   &lt;complexContent&gt;
@@ -36,8 +31,6 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "locator.type")
@@ -50,14 +43,10 @@ public class LocatorType {
     protected String type;
 
     /**
-     * 
-     *                 points to the resource of this locator.
-     *           
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * points to the resource of this locator.
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getHref() {
         return href;
@@ -65,25 +54,19 @@ public class LocatorType {
 
     /**
      * Sets the value of the href property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setHref(String value) {
         this.href = value;
     }
 
     /**
-     * 
-     *                type of the hyperlink (fixed as simple).
-     *           
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * type of the hyperlink (fixed as simple).
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getType() {
         if (type == null) {
@@ -95,11 +78,9 @@ public class LocatorType {
 
     /**
      * Sets the value of the type property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setType(String value) {
         this.type = value;

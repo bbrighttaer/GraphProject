@@ -15,7 +15,7 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for graph.order.type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
  * <p>
  * <pre>
@@ -27,7 +27,6 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/restriction&gt;
  * &lt;/simpleType&gt;
  * </pre>
- * 
  */
 @XmlType(name = "graph.order.type")
 @XmlEnum
@@ -45,17 +44,17 @@ public enum GraphOrderType {
         value = v;
     }
 
-    public String value() {
-        return value;
-    }
-
     public static GraphOrderType fromValue(String v) {
-        for (GraphOrderType c: GraphOrderType.values()) {
+        for (GraphOrderType c : GraphOrderType.values()) {
             if (c.value.equals(v)) {
                 return c;
             }
         }
         throw new IllegalArgumentException(v);
+    }
+
+    public String value() {
+        return value;
     }
 
 }

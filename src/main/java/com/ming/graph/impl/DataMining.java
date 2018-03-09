@@ -48,6 +48,10 @@ import java.util.List;
  * Created by brigh on 5/24/2017.
  */
 public class DataMining implements IDataMining {
+    /**
+     * the visual component and renderer for the graph
+     */
+    VisualizationViewer<Node, Edge> visViewer;
     //private final GraphType graphType;
     private Supplier<Graph<Node, Edge>> graphFactory;
     private Supplier<Node> vertexFactory;
@@ -55,11 +59,6 @@ public class DataMining implements IDataMining {
     private Node maxInDegreeNode;
     private Node maxOutDegreeNode;
     private boolean printLog;
-
-    /**
-     * the visual component and renderer for the graph
-     */
-    VisualizationViewer<Node, Edge> visViewer;
 
     public DataMining(boolean printLog) {
         this.printLog = printLog;
@@ -179,13 +178,10 @@ public class DataMining implements IDataMining {
 
     @Override
     public List<Node> pageRank(Graph<Node, Edge> graph) {
-        //PageRank
-        if (printLog)
-            System.out.println("---- PageRank ranking ----");
         final PageRank pageRank = new PageRank(graph, .1);
         pageRank.evaluate();
-        final List pageRankVertices = new ArrayList(graph.getVertices());
-        Collections.sort(pageRankVertices, (o1, o2) -> Double.compare(getDoubleVal(pageRank.getVertexScore(o2)),
+        final List<Node> pageRankVertices = new ArrayList<>(graph.getVertices());
+        pageRankVertices.sort((o1, o2) -> Double.compare(getDoubleVal(pageRank.getVertexScore(o2)),
                 getDoubleVal(pageRank.getVertexScore(o1))));
         return pageRankVertices;
     }
@@ -258,7 +254,7 @@ public class DataMining implements IDataMining {
         visualizeGraph(powerlawGraph, "Eppstein Power law");
     }
 
-    public void computeFeatures(List<Graph<Node, Edge>> graphList) {
+    public void writeFeatures(List<Graph<Node, Edge>> graphList, String fileNameSuffix) {
         List<TextCsvLine> lines = new ArrayList<TextCsvLine>() {{
             //line 1 [headers]
             add(new TextCsvLine()
@@ -291,12 +287,32 @@ public class DataMining implements IDataMining {
                 .addText(new Text(totalEdgesCount))
                 .addText(new Text(((double) totalVerticesCount) / yearsSet.size()))
                 .addText(new Text(((double) totalEdgesCount) / yearsSet.size())));
-        IFilePersistence persistence = new FilePersistenceCSV(new File(Constants.DATA_DIR + "features.csv"));
+        IFilePersistence persistence = new FilePersistenceCSV(new File(Constants.DATA_DIR + "features_" + fileNameSuffix + ".csv"));
+        persistence.saveLinesToFile(lines, false);
+    }
+
+    public void writeFeatures(Graph<Node, Edge> graph, String fileNameSuffix) {
+        List<TextCsvLine> lines = new ArrayList<TextCsvLine>() {{
+            //line 1 [headers]
+            add(new TextCsvLine()
+                    .addText(new Text("Size of the data set (bytes)"))
+                    .addText(new Text("Total number of vertices"))
+                    .addText(new Text("Total number of links"))
+                    .addText(new Text("Average years' number of vertices"))
+                    .addText(new Text("Average years' number of links")));
+        }};
+        long totalSize = 0L;
+        totalSize += (ObjectSizeCalculator.getObjectSize(graph));
+        lines.add(new TextCsvLine()
+                .addText(new Text(totalSize))
+                .addText(new Text(graph.getVertexCount()))
+                .addText(new Text(graph.getEdgeCount())));
+        IFilePersistence persistence = new FilePersistenceCSV(new File(Constants.DATA_DIR + "features_" + fileNameSuffix + ".csv"));
         persistence.saveLinesToFile(lines, false);
     }
 
     @Override
-    public void computeDegreeDistribution(Graph<Node, Edge> graph) {
+    public void writeDegreeDistribution(Graph<Node, Edge> graph, String fileNameSuffix) {
         int numNodes = graph.getVertexCount();
         Map<Integer, Degree> degDistMap = new HashMap<>();
 //        for (int i = 1; i < numNodes; i++)
@@ -315,7 +331,7 @@ public class DataMining implements IDataMining {
             line.addText(new Text(d.get()));
             lineProb.addText(new Text(((double) d.get()) / numNodes));
         });
-        IFilePersistence persistence = new FilePersistenceCSV(new File(Constants.DATA_DIR + "degreeDist.csv"));
+        IFilePersistence persistence = new FilePersistenceCSV(new File(Constants.DATA_DIR + "degreeDist_" + fileNameSuffix + ".csv"));
         persistence.saveLinesToFile(new ArrayList<TextCsvLine>() {{
             add(lineX);
             add(line);
@@ -323,13 +339,12 @@ public class DataMining implements IDataMining {
         }}, false);
     }
 
-    public void computePerYearData(List<Graph<Node, Edge>> graphList) {
+    public void writePerYearData(List<Graph<Node, Edge>> graphList, String fileNameSuffix) {
         List<TextCsvLine> lines = new ArrayList<TextCsvLine>() {{
             //line 1 [headers]
             add(new TextCsvLine()
                     .addText(new Text("Year"))
-                    .addText(new Text("Total number of vertices"))
-                    .addText(new Text("Total number of links"))
+                    .addText(new Text("Total number of edges"))
                     .addText(new Text("Total number of vertices")));
         }};
         final SortedMap<Integer, List<Graph<Node, Edge>>> groupGraphs = GraphUtils.groupGraphsIntoYears(graphList);
@@ -337,35 +352,38 @@ public class DataMining implements IDataMining {
                 .addText(new Text(year))
                 .addText(new Text(countEdges(gList)))
                 .addText(new Text(countVertices(gList)))));
-        IFilePersistence persistence = new FilePersistenceCSV(new File(Constants.DATA_DIR + "perYearInfo.csv"));
+        IFilePersistence persistence = new FilePersistenceCSV(new File(Constants.DATA_DIR + "perYearInfo_" + fileNameSuffix + ".csv"));
         persistence.saveLinesToFile(lines, false);
     }
 
-    public void computeAccumulatedPerYearData(List<Graph<Node, Edge>> graphList) {
+    public void writeAccumulatedPerYearData(List<Graph<Node, Edge>> graphList, String fileNameSuffix) {
         List<TextCsvLine> lines = new ArrayList<TextCsvLine>() {{
             //line 1 [headers]
             add(new TextCsvLine()
                     .addText(new Text("Year"))
-                    .addText(new Text("Total number of vertices"))
-                    .addText(new Text("Total number of links"))
+                    .addText(new Text("Total number of edges"))
                     .addText(new Text("Total number of vertices")));
         }};
         final SortedMap<Integer, List<Graph<Node, Edge>>> groupGraphs = GraphUtils.groupGraphsIntoYears(graphList);
         final Integer[] keys = new Integer[groupGraphs.keySet().size()];
-        groupGraphs.keySet().toArray(keys);
-        for (int i = 0; i < groupGraphs.size(); i++) {
+        int accumNumEdges = 0;
+        int accumNumNodes = 0;
+        for (Integer year : groupGraphs.keySet()) {
+            final List<Graph<Node, Edge>> graphListYr = groupGraphs.get(year);
+            for (Graph<Node, Edge> graph : graphListYr) {
+                accumNumNodes += graph.getVertexCount();
+                accumNumEdges += graph.getEdgeCount();
+            }
             lines.add(new TextCsvLine()
-                    .addText(new Text(keys[i]))
-                    .addText(new Text(countEdges(groupGraphs.get(keys[i]))
-                            + (((i - 1) >= 0) ? countEdges(groupGraphs.get(keys[i - 1])) : 0)))
-                    .addText(new Text(countVertices(groupGraphs.get(keys[i]))
-                            + (((i - 1) >= 0) ? countVertices(groupGraphs.get(keys[i - 1])) : 0))));
+                    .addText(new Text(year))
+                    .addText(new Text(accumNumEdges))
+                    .addText(new Text(accumNumNodes)));
         }
-        IFilePersistence persistence = new FilePersistenceCSV(new File(Constants.DATA_DIR + "accumulatedPerYearInfo.csv"));
+        IFilePersistence persistence = new FilePersistenceCSV(new File(Constants.DATA_DIR + "accumulatedPerYearInfo_" + fileNameSuffix + ".csv"));
         persistence.saveLinesToFile(lines, false);
     }
 
-    public void writeDegreeAgnstNodeData(Graph<Node, Edge> graph, boolean sorted) {
+    public void writeDegreeAgainstNodeData(Graph<Node, Edge> graph, boolean sorted, String fileNameSuffix) {
         TextCsvLine xLine = new TextCsvLine();
         TextCsvLine yLine = new TextCsvLine();
         List<Node> vertices = new ArrayList<>();
@@ -374,7 +392,7 @@ public class DataMining implements IDataMining {
             Collections.sort(vertices, new NodeComparator(graph));
         vertices.forEach(node -> yLine.addText(new Text(graph.getIncidentEdges(node).size())));
         for (int i = 1; i <= vertices.size(); i++) xLine.addText(new Text(i));
-        IFilePersistence persistence = new FilePersistenceCSV(new File(Constants.DATA_DIR + "degreeAgainstNode.csv"));
+        IFilePersistence persistence = new FilePersistenceCSV(new File(Constants.DATA_DIR + "degreeAgainstNode_" + fileNameSuffix + ".csv"));
         persistence.saveLinesToFile(new ArrayList<TextCsvLine>() {{
             add(xLine);
             add(yLine);
@@ -470,6 +488,12 @@ public class DataMining implements IDataMining {
         return visViewer;
     }
 
+    private void setUpBarabasiVariables() {
+        graphFactory = SparseMultigraph::new;
+        vertexFactory = new VertexFactory();
+        edgeFactory = new EdgeFactory();
+    }
+
     static class GraphMouseListenerImpl<V> implements GraphMouseListener<V> {
 
         public void graphClicked(V v, MouseEvent me) {
@@ -480,11 +504,5 @@ public class DataMining implements IDataMining {
 
         public void graphReleased(V v, MouseEvent me) {
         }
-    }
-
-    private void setUpBarabasiVariables() {
-        graphFactory = SparseMultigraph::new;
-        vertexFactory = new VertexFactory();
-        edgeFactory = new EdgeFactory();
     }
 }

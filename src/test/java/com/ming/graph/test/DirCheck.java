@@ -17,14 +17,14 @@ import java.util.List;
  * Time: 6:09 PM
  * Project: GraphProject
  */
-public class DirCheck extends TestCase{
+public class DirCheck extends TestCase {
     private static Logger log = (Logger) LoggerFactory.getLogger(DirCheck.class);
 
-    public void testDataSet(){
+    public void testDataSet() {
         final String path = DirCheck.class.getResource("/data_coauthors").getPath();
         System.out.println(path);
         File file = new File(path);
-        if(file.isDirectory()){
+        if (file.isDirectory()) {
             final String[] files = file.list((dir, name) -> StringUtils.endsWith(name, ".graphml"));
             log.info("No. of files: {}", files.length);
             log.info(Arrays.toString(files));
@@ -32,7 +32,7 @@ public class DirCheck extends TestCase{
         Assert.assertNotNull(file);
     }
 
-    public void testGraphFilePaths(){
+    public void testGraphFilePaths() {
         final List<String> data = GraphUtils.getFilePaths("data_coauthors");
         StringBuilder bldr = new StringBuilder();
         for (int i = 0; i < data.size(); i++) {

@@ -17,10 +17,10 @@ public class TextCsvLine extends Line<Text> {
     public String print() {
         StringBuilder strb = new StringBuilder();
         final ListIterator<Text> it = this.line.listIterator();
-        while (it.hasNext()){
+        while (it.hasNext()) {
             final Text t = it.next();
             strb.append(t.getText());
-            if(!t.equals(this.line.getLast()))
+            if (!t.equals(this.line.getLast()))
                 strb.append(SEPARATOR);
         }
         return strb.toString();
@@ -31,20 +31,20 @@ public class TextCsvLine extends Line<Text> {
         return print().concat("\n");
     }
 
-    public TextCsvLine addText(Text text){
+    public TextCsvLine addText(Text text) {
         this.line.add(text);
         return this;
     }
 
-    public void removeText(Text text){
+    public void removeText(Text text) {
         this.line.remove(text);
     }
 
-    public Text removeText(int index){
+    public Text removeText(int index) {
         return this.line.remove(index);
     }
 
-    public Text backspace(){
+    public Text backspace() {
         return this.line.removeLast();
     }
 

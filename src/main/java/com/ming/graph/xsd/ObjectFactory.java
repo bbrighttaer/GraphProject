@@ -15,18 +15,17 @@ import javax.xml.namespace.QName;
 
 
 /**
- * This object contains factory methods for each 
- * Java content interface and Java element interface 
- * generated in the com.ming.graph.xsd package. 
- * <p>An ObjectFactory allows you to programatically 
- * construct new instances of the Java representation 
- * for XML content. The Java representation of XML 
- * content can consist of schema derived interfaces 
- * and classes representing the binding of schema 
- * type definitions, element declarations and model 
- * groups.  Factory methods for each of these are 
+ * This object contains factory methods for each
+ * Java content interface and Java element interface
+ * generated in the com.ming.graph.xsd package.
+ * <p>An ObjectFactory allows you to programatically
+ * construct new instances of the Java representation
+ * for XML content. The Java representation of XML
+ * content can consist of schema derived interfaces
+ * and classes representing the binding of schema
+ * type definitions, element declarations and model
+ * groups.  Factory methods for each of these are
  * provided in this class.
- * 
  */
 @XmlRegistry
 public class ObjectFactory {
@@ -46,14 +45,12 @@ public class ObjectFactory {
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: com.ming.graph.xsd
-     * 
      */
     public ObjectFactory() {
     }
 
     /**
      * Create an instance of {@link LocatorType }
-     * 
      */
     public LocatorType createLocatorType() {
         return new LocatorType();
@@ -61,7 +58,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link DataType }
-     * 
      */
     public DataType createDataType() {
         return new DataType();
@@ -69,7 +65,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link KeyType }
-     * 
      */
     public KeyType createKeyType() {
         return new KeyType();
@@ -77,7 +72,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link DefaultType }
-     * 
      */
     public DefaultType createDefaultType() {
         return new DefaultType();
@@ -85,7 +79,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link GraphmlType }
-     * 
      */
     public GraphmlType createGraphmlType() {
         return new GraphmlType();
@@ -93,7 +86,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link GraphType }
-     * 
      */
     public GraphType createGraphType() {
         return new GraphType();
@@ -101,7 +93,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link NodeType }
-     * 
      */
     public NodeType createNodeType() {
         return new NodeType();
@@ -109,7 +100,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link PortType }
-     * 
      */
     public PortType createPortType() {
         return new PortType();
@@ -117,7 +107,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link EdgeType }
-     * 
      */
     public EdgeType createEdgeType() {
         return new EdgeType();
@@ -125,7 +114,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link HyperedgeType }
-     * 
      */
     public HyperedgeType createHyperedgeType() {
         return new HyperedgeType();
@@ -133,7 +121,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link EndpointType }
-     * 
      */
     public EndpointType createEndpointType() {
         return new EndpointType();
@@ -141,7 +128,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link DataExtensionType }
-     * 
      */
     public DataExtensionType createDataExtensionType() {
         return new DataExtensionType();
@@ -149,7 +135,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
-     * 
      */
     @XmlElementDecl(namespace = "http://graphml.graphdrawing.org/xmlns", name = "desc")
     public JAXBElement<String> createDesc(String value) {
@@ -158,7 +143,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link LocatorType }{@code >}}
-     * 
      */
     @XmlElementDecl(namespace = "http://graphml.graphdrawing.org/xmlns", name = "locator")
     public JAXBElement<LocatorType> createLocator(LocatorType value) {
@@ -167,7 +151,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link DataType }{@code >}}
-     * 
      */
     @XmlElementDecl(namespace = "http://graphml.graphdrawing.org/xmlns", name = "data")
     public JAXBElement<DataType> createData(DataType value) {
@@ -176,7 +159,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link KeyType }{@code >}}
-     * 
      */
     @XmlElementDecl(namespace = "http://graphml.graphdrawing.org/xmlns", name = "key")
     public JAXBElement<KeyType> createKey(KeyType value) {
@@ -185,7 +167,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link DefaultType }{@code >}}
-     * 
      */
     @XmlElementDecl(namespace = "http://graphml.graphdrawing.org/xmlns", name = "default")
     public JAXBElement<DefaultType> createDefault(DefaultType value) {
@@ -194,7 +175,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link GraphmlType }{@code >}}
-     * 
      */
     @XmlElementDecl(namespace = "http://graphml.graphdrawing.org/xmlns", name = "graphml")
     public JAXBElement<GraphmlType> createGraphml(GraphmlType value) {
@@ -203,7 +183,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link GraphType }{@code >}}
-     * 
      */
     @XmlElementDecl(namespace = "http://graphml.graphdrawing.org/xmlns", name = "graph")
     public JAXBElement<GraphType> createGraph(GraphType value) {
@@ -212,7 +191,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link NodeType }{@code >}}
-     * 
      */
     @XmlElementDecl(namespace = "http://graphml.graphdrawing.org/xmlns", name = "node")
     public JAXBElement<NodeType> createNode(NodeType value) {
@@ -221,7 +199,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link PortType }{@code >}}
-     * 
      */
     @XmlElementDecl(namespace = "http://graphml.graphdrawing.org/xmlns", name = "port")
     public JAXBElement<PortType> createPort(PortType value) {
@@ -230,7 +207,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link EdgeType }{@code >}}
-     * 
      */
     @XmlElementDecl(namespace = "http://graphml.graphdrawing.org/xmlns", name = "edge")
     public JAXBElement<EdgeType> createEdge(EdgeType value) {
@@ -239,7 +215,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link HyperedgeType }{@code >}}
-     * 
      */
     @XmlElementDecl(namespace = "http://graphml.graphdrawing.org/xmlns", name = "hyperedge")
     public JAXBElement<HyperedgeType> createHyperedge(HyperedgeType value) {
@@ -248,7 +223,6 @@ public class ObjectFactory {
 
     /**
      * Create an instance of {@link JAXBElement }{@code <}{@link EndpointType }{@code >}}
-     * 
      */
     @XmlElementDecl(namespace = "http://graphml.graphdrawing.org/xmlns", name = "endpoint")
     public JAXBElement<EndpointType> createEndpoint(EndpointType value) {
