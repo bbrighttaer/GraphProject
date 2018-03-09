@@ -92,7 +92,7 @@ public class GraphAnalysis implements IGraphAnalysis {
                     log.info("Switched to: {}", currentEvGraphName);
                 evolveGraph();
             } else {
-                if (printLog)
+                if (printLog && !Constants.SIM_OVER)
                     log.info("Information Graph evolution finished");
                 if (isMainGraphAnalysis) {
                     Constants.SIM_OVER = true;

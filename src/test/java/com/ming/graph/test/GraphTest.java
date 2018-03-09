@@ -133,6 +133,22 @@ public class GraphTest extends TestCase {
         new DataMining(true).writeDegreeAgnstNodeData(graphList.get(0), false);
     }
 
+    public void testPageRank(){
+        final List<String> graphPaths = GraphUtils.getFilePaths(Constants.GRAPH_FOLDER_NAME);
+        setkeys(graphPaths, false);
+        List<Graph<Node, Edge>> graphList = new ArrayList<>();
+        try {
+            graphList.add(GraphUtils.getGraph(graphPaths.get(0)));
+        } catch (ParserConfigurationException |SAXException | IOException e) {
+            log.error(e.getMessage());
+        }
+        final List<Node> nodes = new DataMining(true).pageRank(graphList.get(0));
+        Assert.assertNotNull(nodes);
+        nodes.forEach(node -> System.out.println(node.getId()));
+        System.out.println(String.format("\n\nTop %d nodes\n----------", Constants.TOP_K_RANKED_NODES));
+        for (int i = 0; i < Constants.TOP_K_RANKED_NODES; i++) System.out.println(nodes.get(i).getId());
+    }
+
     public void testUndirectedGraphDeg(){
         UndirectedGraph<Node, Edge> graph = new UndirectedSparseGraph<>();
         final Node v1 = new Node();

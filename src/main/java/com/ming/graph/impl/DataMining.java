@@ -178,6 +178,19 @@ public class DataMining implements IDataMining {
     }
 
     @Override
+    public List<Node> pageRank(Graph<Node, Edge> graph) {
+        //PageRank
+        if (printLog)
+            System.out.println("---- PageRank ranking ----");
+        final PageRank pageRank = new PageRank(graph, .1);
+        pageRank.evaluate();
+        final List pageRankVertices = new ArrayList(graph.getVertices());
+        Collections.sort(pageRankVertices, (o1, o2) -> Double.compare(getDoubleVal(pageRank.getVertexScore(o2)),
+                getDoubleVal(pageRank.getVertexScore(o1))));
+        return pageRankVertices;
+    }
+
+    @Override
     public void topologyAnalysis(Graph<Node, Edge> graph) {
         Object[] verticesArr = graph.getVertices().toArray();
         Object firstVertex = verticesArr[0];

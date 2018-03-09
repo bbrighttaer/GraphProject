@@ -10,4 +10,6 @@ import com.ming.graph.app.GraphAnalysis;
  */
 public interface IEvolutionManager {
     void afterEvolution(GraphAnalysis ga);
+
+    void thenShutdown(int c);
 }
