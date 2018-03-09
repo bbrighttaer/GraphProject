@@ -16,6 +16,8 @@ import java.util.Map;
  */
 public class Constants {
     public static final int GROWING_RATE = 5;
+    public static final boolean SORT_DEGREE_VRS_VERTICE_DATA = true;
+    public static final int EVOLUTION_DELAY = 100; //Milliseconds
     public static Map<Graph<Node, Edge>, String> GRAPH_METADATA_MAP = new HashMap<>();
     public static final String GRAPH_XSD_PKG = "com.ming.graph.xsd";
     public static final Map<String, String> GRAPH_KEYS = new HashMap<>();
@@ -29,6 +31,5 @@ public class Constants {
     public static boolean SIM_OVER = false;
     public static double NORMALIZATION_CONSTANT = 0.4;
     public static double POWER_LAW_ALPHA = 2;
-    public static Node MAX_IN_DEGREE_NODE, MAX_OUT_DEGREE_NODE;
     public static Timer SIM_TIMER;
 }
