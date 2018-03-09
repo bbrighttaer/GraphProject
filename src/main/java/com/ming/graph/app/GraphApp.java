@@ -2,8 +2,10 @@ package com.ming.graph.app;
 
 import ch.qos.logback.classic.Logger;
 import com.ming.graph.api.IGraphAnalysis;
+import com.ming.graph.config.Constants;
 import com.ming.graph.impl.DataMining;
 import com.ming.graph.impl.DecisionRound;
+import com.ming.graph.impl.EvolutionManager;
 import com.ming.graph.model.Edge;
 import com.ming.graph.model.Node;
 import com.ming.graph.util.GraphUtils;
@@ -48,20 +50,16 @@ public class GraphApp {
             }
         });
         loadingTimer.stop();
-        final GraphAnalysis main_graph_analysis = new GraphAnalysis(graphList, ga -> {
-            ga.getDataMining().computeDegreeDistribution(ga.getInitialGraph());
-            final Graph<Node, Edge> biggestSubGraph = ga.getDataMining()
-                    .getBiggestSubGraph(ga.getInitialGraph());
-            new DataMining(false).visualizeGraph(biggestSubGraph, "Biggest sub-graph");
-        });
+        final GraphAnalysis main_graph_analysis = new GraphAnalysis(graphList, new EvolutionManager());
         new Thread(() -> main_graph_analysis.getDataMining().computeFeatures(graphList)).start();
         new Thread(() -> main_graph_analysis.getDataMining().computePerYearData(graphList)).start();
         new Thread(() -> main_graph_analysis.getDataMining().computeAccumulatedPerYearData(graphList)).start();
         final List<IGraphAnalysis> analysisList = formPerYearEvolution(graphList);
         analysisList.add(main_graph_analysis);
-        SIM_TIMER = new Timer(100, new DecisionRound(analysisList));
+        SIM_TIMER = new Timer(Constants.EVOLUTION_DELAY, new DecisionRound(analysisList));
         SIM_TIMER.start();
-        while (!SIM_OVER){}
+        while (!SIM_OVER) {
+        }
     }
 
     private static List<IGraphAnalysis> formPerYearEvolution(List<Graph<Node, Edge>> graphList) {

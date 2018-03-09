@@ -34,6 +34,7 @@ import static com.ming.graph.config.Constants.GRAPH_XSD_PKG;
  * Time: 7:17 PM
  * Project: GraphProject
  */
+@SuppressWarnings("Duplicates")
 public class GraphTest extends TestCase {
     private static Logger log = (Logger) LoggerFactory.getLogger(GraphTest.class);
 
@@ -118,6 +119,18 @@ public class GraphTest extends TestCase {
             log.error(e.getMessage());
         }
         new DataMining(true).computeDegreeDistribution(graphList.get(0));
+    }
+
+    public void testDegreeAgnstVertice(){
+        final List<String> graphPaths = GraphUtils.getFilePaths(Constants.GRAPH_FOLDER_NAME);
+        setkeys(graphPaths, false);
+        List<Graph<Node, Edge>> graphList = new ArrayList<>();
+        try {
+            graphList.add(GraphUtils.getGraph(graphPaths.get(0)));
+        } catch (ParserConfigurationException |SAXException | IOException e) {
+            log.error(e.getMessage());
+        }
+        new DataMining(true).writeDegreeAgnstNodeData(graphList.get(0), false);
     }
 
     public void testUndirectedGraphDeg(){

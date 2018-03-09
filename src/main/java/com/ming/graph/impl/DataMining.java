@@ -352,6 +352,22 @@ public class DataMining implements IDataMining {
         persistence.saveLinesToFile(lines, false);
     }
 
+    public void writeDegreeAgnstNodeData(Graph<Node, Edge> graph, boolean sorted) {
+        TextCsvLine xLine = new TextCsvLine();
+        TextCsvLine yLine = new TextCsvLine();
+        List<Node> vertices = new ArrayList<>();
+        vertices.addAll(graph.getVertices());
+        if (sorted)
+            Collections.sort(vertices, new NodeComparator(graph));
+        vertices.forEach(node -> yLine.addText(new Text(graph.getIncidentEdges(node).size())));
+        for (int i = 1; i <= vertices.size(); i++) xLine.addText(new Text(i));
+        IFilePersistence persistence = new FilePersistenceCSV(new File(Constants.DATA_DIR + "degreeAgainstNode.csv"));
+        persistence.saveLinesToFile(new ArrayList<TextCsvLine>() {{
+            add(xLine);
+            add(yLine);
+        }}, false);
+    }
+
     private int countVertices(List<Graph<Node, Edge>> graphList) {
         int count = 0;
         for (Graph g : graphList)
