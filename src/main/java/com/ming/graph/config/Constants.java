@@ -15,13 +15,14 @@ import java.util.Map;
  * Project: GraphProject
  */
 public class Constants {
-    public static final int GROWING_RATE = 5;
+    public static final int GROWING_RATE = 20;
     public static final boolean SORT_DEGREE_VRS_VERTICE_DATA = true;
-    public static final int EVOLUTION_DELAY = 100; //Milliseconds
+    public static final int EVOLUTION_DELAY = 10; //Milliseconds
+    public static final int NUM_OF_SUB_GRAPH_FOR_VIS = 1;
     public static Map<Graph<Node, Edge>, String> GRAPH_METADATA_MAP = new HashMap<>();
     public static final String GRAPH_XSD_PKG = "com.ming.graph.xsd";
     public static final Map<String, String> GRAPH_KEYS = new HashMap<>();
-    public static final String GRAPH_FOLDER_NAME = "wos";
+    public static final String GRAPH_FOLDER_NAME = "wos_test";
     public static final int BASE_GRAPH_INDEX = 0;
     public static final int RAND_GEN_SEED = 32;
     public static final String AUTHOR_JOURNAL_ID = "ayjid";
@@ -32,4 +33,5 @@ public class Constants {
     public static double NORMALIZATION_CONSTANT = 0.4;
     public static double POWER_LAW_ALPHA = 2;
     public static Timer SIM_TIMER;
+    public static final int TOP_K_RANKED_NODES = 3;
 }

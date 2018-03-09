@@ -28,5 +28,7 @@ public interface IDataMining {
 
     Graph<Node, Edge> getBiggestSubGraph(Graph<Node, Edge> graph);
 
+    List<Node> pageRank(Graph<Node, Edge> graph);
+
     void edgeBetweeness(Graph<Node, Edge> graph);
 }
