@@ -32,9 +32,9 @@ public class FilePersistenceCSV implements IFilePersistence {
 
     @Override
     public <E extends Line> void saveLinesToFile(List<E> linesList, boolean append) {
-        try{
+        try {
             FileUtils.writeLines(file, linesList, append);
-        }catch (IOException e){
+        } catch (IOException e) {
             log.error(e.getMessage());
         }
     }

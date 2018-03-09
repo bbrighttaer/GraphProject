@@ -12,12 +12,12 @@ public class Degree {
     public Degree() {
     }
 
-    public Degree increment(){
+    public Degree increment() {
         ++d;
         return this;
     }
 
-    public int get(){
+    public int get() {
         return d;
     }
 }

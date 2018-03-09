@@ -8,29 +8,22 @@
 
 package com.ming.graph.xsd;
 
+import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.CollapsedStringAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 
 /**
- * 
- *       Complex type for the <graph> element.
- *     
- * 
+ * Complex type for the <graph> element.
+ * <p>
+ * <p>
  * <p>Java class for graph.type complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="graph.type"&gt;
  *   &lt;complexContent&gt;
@@ -56,23 +49,21 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "graph.type", propOrder = {
-    "desc",
-    "dataOrNodeOrEdge",
-    "locator"
+        "desc",
+        "dataOrNodeOrEdge",
+        "locator"
 })
 public class GraphType {
 
     protected String desc;
     @XmlElements({
-        @XmlElement(name = "data", type = DataType.class),
-        @XmlElement(name = "node", type = NodeType.class),
-        @XmlElement(name = "edge", type = EdgeType.class),
-        @XmlElement(name = "hyperedge", type = HyperedgeType.class)
+            @XmlElement(name = "data", type = DataType.class),
+            @XmlElement(name = "node", type = NodeType.class),
+            @XmlElement(name = "edge", type = EdgeType.class),
+            @XmlElement(name = "hyperedge", type = HyperedgeType.class)
     })
     protected List<Object> dataOrNodeOrEdge;
     protected LocatorType locator;
@@ -99,11 +90,9 @@ public class GraphType {
 
     /**
      * Gets the value of the desc property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getDesc() {
         return desc;
@@ -111,11 +100,9 @@ public class GraphType {
 
     /**
      * Sets the value of the desc property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setDesc(String value) {
         this.desc = value;
@@ -123,28 +110,26 @@ public class GraphType {
 
     /**
      * Gets the value of the dataOrNodeOrEdge property.
-     * 
+     * <p>
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the dataOrNodeOrEdge property.
-     * 
+     * <p>
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getDataOrNodeOrEdge().add(newItem);
      * </pre>
-     * 
-     * 
+     * <p>
+     * <p>
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link DataType }
      * {@link NodeType }
      * {@link EdgeType }
      * {@link HyperedgeType }
-     * 
-     * 
      */
     public List<Object> getDataOrNodeOrEdge() {
         if (dataOrNodeOrEdge == null) {
@@ -155,11 +140,9 @@ public class GraphType {
 
     /**
      * Gets the value of the locator property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link LocatorType }
-     *     
+     *
+     * @return possible object is
+     * {@link LocatorType }
      */
     public LocatorType getLocator() {
         return locator;
@@ -167,11 +150,9 @@ public class GraphType {
 
     /**
      * Sets the value of the locator property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link LocatorType }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link LocatorType }
      */
     public void setLocator(LocatorType value) {
         this.locator = value;
@@ -179,11 +160,9 @@ public class GraphType {
 
     /**
      * Gets the value of the id property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getId() {
         return id;
@@ -191,11 +170,9 @@ public class GraphType {
 
     /**
      * Sets the value of the id property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setId(String value) {
         this.id = value;
@@ -203,11 +180,9 @@ public class GraphType {
 
     /**
      * Gets the value of the edgedefault property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link GraphEdgedefaultType }
-     *     
+     *
+     * @return possible object is
+     * {@link GraphEdgedefaultType }
      */
     public GraphEdgedefaultType getEdgedefault() {
         return edgedefault;
@@ -215,11 +190,9 @@ public class GraphType {
 
     /**
      * Sets the value of the edgedefault property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link GraphEdgedefaultType }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link GraphEdgedefaultType }
      */
     public void setEdgedefault(GraphEdgedefaultType value) {
         this.edgedefault = value;
@@ -227,11 +200,9 @@ public class GraphType {
 
     /**
      * Gets the value of the parseNodeids property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link GraphNodeidsType }
-     *     
+     *
+     * @return possible object is
+     * {@link GraphNodeidsType }
      */
     public GraphNodeidsType getParseNodeids() {
         return parseNodeids;
@@ -239,11 +210,9 @@ public class GraphType {
 
     /**
      * Sets the value of the parseNodeids property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link GraphNodeidsType }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link GraphNodeidsType }
      */
     public void setParseNodeids(GraphNodeidsType value) {
         this.parseNodeids = value;
@@ -251,11 +220,9 @@ public class GraphType {
 
     /**
      * Gets the value of the parseEdgeids property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link GraphEdgeidsType }
-     *     
+     *
+     * @return possible object is
+     * {@link GraphEdgeidsType }
      */
     public GraphEdgeidsType getParseEdgeids() {
         return parseEdgeids;
@@ -263,11 +230,9 @@ public class GraphType {
 
     /**
      * Sets the value of the parseEdgeids property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link GraphEdgeidsType }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link GraphEdgeidsType }
      */
     public void setParseEdgeids(GraphEdgeidsType value) {
         this.parseEdgeids = value;
@@ -275,11 +240,9 @@ public class GraphType {
 
     /**
      * Gets the value of the parseOrder property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link GraphOrderType }
-     *     
+     *
+     * @return possible object is
+     * {@link GraphOrderType }
      */
     public GraphOrderType getParseOrder() {
         return parseOrder;
@@ -287,11 +250,9 @@ public class GraphType {
 
     /**
      * Sets the value of the parseOrder property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link GraphOrderType }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link GraphOrderType }
      */
     public void setParseOrder(GraphOrderType value) {
         this.parseOrder = value;
@@ -299,11 +260,9 @@ public class GraphType {
 
     /**
      * Gets the value of the parseNodes property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
+     *
+     * @return possible object is
+     * {@link BigInteger }
      */
     public BigInteger getParseNodes() {
         return parseNodes;
@@ -311,11 +270,9 @@ public class GraphType {
 
     /**
      * Sets the value of the parseNodes property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link BigInteger }
      */
     public void setParseNodes(BigInteger value) {
         this.parseNodes = value;
@@ -323,11 +280,9 @@ public class GraphType {
 
     /**
      * Gets the value of the parseEdges property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
+     *
+     * @return possible object is
+     * {@link BigInteger }
      */
     public BigInteger getParseEdges() {
         return parseEdges;
@@ -335,11 +290,9 @@ public class GraphType {
 
     /**
      * Sets the value of the parseEdges property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link BigInteger }
      */
     public void setParseEdges(BigInteger value) {
         this.parseEdges = value;
@@ -347,11 +300,9 @@ public class GraphType {
 
     /**
      * Gets the value of the parseMaxindegree property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
+     *
+     * @return possible object is
+     * {@link BigInteger }
      */
     public BigInteger getParseMaxindegree() {
         return parseMaxindegree;
@@ -359,11 +310,9 @@ public class GraphType {
 
     /**
      * Sets the value of the parseMaxindegree property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link BigInteger }
      */
     public void setParseMaxindegree(BigInteger value) {
         this.parseMaxindegree = value;
@@ -371,11 +320,9 @@ public class GraphType {
 
     /**
      * Gets the value of the parseMaxoutdegree property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *     
+     *
+     * @return possible object is
+     * {@link BigInteger }
      */
     public BigInteger getParseMaxoutdegree() {
         return parseMaxoutdegree;
@@ -383,11 +330,9 @@ public class GraphType {
 
     /**
      * Sets the value of the parseMaxoutdegree property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link BigInteger }
      */
     public void setParseMaxoutdegree(BigInteger value) {
         this.parseMaxoutdegree = value;

@@ -36,9 +36,9 @@ import static com.ming.graph.config.Constants.*;
  * Project: GraphProject
  */
 public class GraphUtils {
-    private static Logger log = (Logger) LoggerFactory.getLogger(GraphUtils.class);
     public static int GRAPH_COUNT = 0;
     public static boolean isDirected;
+    private static Logger log = (Logger) LoggerFactory.getLogger(GraphUtils.class);
 
     public static List<String> getFilePaths(String folderName) {
         List<String> graphFilePathList = new ArrayList<>();

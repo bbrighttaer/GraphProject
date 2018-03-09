@@ -13,7 +13,7 @@ public class Text {
         this.text = text;
     }
 
-    public Text(Number number){
+    public Text(Number number) {
         this.text = String.valueOf(number);
     }
 

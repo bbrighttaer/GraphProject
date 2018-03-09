@@ -20,10 +20,6 @@ public interface IDataMining {
 
     void visualizeGraph(Graph<Node, Edge> graph, String title);
 
-    void computeFeatures(List<Graph<Node, Edge>> graphList);
-
-    void computeDegreeDistribution(Graph<Node, Edge> graph);
-
     Set weaklyConnectedComponents(Graph<Node, Edge> graph);
 
     Graph<Node, Edge> getBiggestSubGraph(Graph<Node, Edge> graph);
@@ -31,4 +27,16 @@ public interface IDataMining {
     List<Node> pageRank(Graph<Node, Edge> graph);
 
     void edgeBetweeness(Graph<Node, Edge> graph);
+
+    void writeFeatures(List<Graph<Node, Edge>> graphList, String fileNameSuffix);
+
+    void writeFeatures(Graph<Node, Edge> graph, String fileNameSuffix);
+
+    void writeDegreeDistribution(Graph<Node, Edge> graph, String fileNameSuffix);
+
+    void writeAccumulatedPerYearData(List<Graph<Node, Edge>> graphList, String fileNameSuffix);
+
+    void writePerYearData(List<Graph<Node, Edge>> graphList, String fileNameSuffix);
+
+    void writeDegreeAgainstNodeData(Graph<Node, Edge> graph, boolean sorted, String fileNameSuffix);
 }

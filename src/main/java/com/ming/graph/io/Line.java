@@ -28,7 +28,7 @@ public abstract class Line<T> {
 
     public abstract String println();
 
-    public <L extends Line<T>> L join(L l){
+    public <L extends Line<T>> L join(L l) {
         line.addAll(l.line);
         l.setLine(this.line);
         return l;

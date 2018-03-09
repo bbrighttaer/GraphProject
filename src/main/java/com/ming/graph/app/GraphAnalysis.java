@@ -97,7 +97,7 @@ public class GraphAnalysis implements IGraphAnalysis {
                 if (isMainGraphAnalysis) {
                     Constants.SIM_OVER = true;
                     SIM_TIMER.stop();
-                    if (evManager != null && !isSubGraphShown){
+                    if (evManager != null && !isSubGraphShown) {
                         evManager.afterEvolution(this);
                         isSubGraphShown = true;
                     }

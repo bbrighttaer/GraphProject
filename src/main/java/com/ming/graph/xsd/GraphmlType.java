@@ -8,24 +8,19 @@
 
 package com.ming.graph.xsd;
 
+import javax.xml.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * 
- *       Complex type for the <graphml> element.
- *     
- * 
+ * Complex type for the <graphml> element.
+ * <p>
+ * <p>
  * <p>Java class for graphml.type complex type.
- * 
+ * <p>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p>
  * <pre>
  * &lt;complexType name="graphml.type"&gt;
  *   &lt;complexContent&gt;
@@ -45,32 +40,28 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "graphml.type", propOrder = {
-    "desc",
-    "key",
-    "graphOrData"
+        "desc",
+        "key",
+        "graphOrData"
 })
 public class GraphmlType {
 
     protected String desc;
     protected List<KeyType> key;
     @XmlElements({
-        @XmlElement(name = "graph", type = GraphType.class),
-        @XmlElement(name = "data", type = DataType.class)
+            @XmlElement(name = "graph", type = GraphType.class),
+            @XmlElement(name = "data", type = DataType.class)
     })
     protected List<Object> graphOrData;
 
     /**
      * Gets the value of the desc property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getDesc() {
         return desc;
@@ -78,11 +69,9 @@ public class GraphmlType {
 
     /**
      * Sets the value of the desc property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setDesc(String value) {
         this.desc = value;
@@ -90,25 +79,23 @@ public class GraphmlType {
 
     /**
      * Gets the value of the key property.
-     * 
+     * <p>
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the key property.
-     * 
+     * <p>
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getKey().add(newItem);
      * </pre>
-     * 
-     * 
+     * <p>
+     * <p>
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link KeyType }
-     * 
-     * 
      */
     public List<KeyType> getKey() {
         if (key == null) {
@@ -119,26 +106,24 @@ public class GraphmlType {
 
     /**
      * Gets the value of the graphOrData property.
-     * 
+     * <p>
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the graphOrData property.
-     * 
+     * <p>
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getGraphOrData().add(newItem);
      * </pre>
-     * 
-     * 
+     * <p>
+     * <p>
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link GraphType }
      * {@link DataType }
-     * 
-     * 
      */
     public List<Object> getGraphOrData() {
         if (graphOrData == null) {

@@ -1,7 +1,6 @@
 package com.ming.graph.test;
 
 import ch.qos.logback.classic.Logger;
-import com.ming.graph.api.IDataMining;
 import com.ming.graph.config.Constants;
 import com.ming.graph.impl.DataMining;
 import com.ming.graph.model.Edge;
@@ -93,7 +92,7 @@ public class GraphTest extends TestCase {
         }
     }
 
-    public void testGroupedGraphsByYear(){
+    public void testGroupedGraphsByYear() {
         final List<String> graphPaths = GraphUtils.getFilePaths(Constants.GRAPH_FOLDER_NAME);
         setkeys(graphPaths, false);
         List<Graph<Node, Edge>> graphList = new ArrayList<>();
@@ -109,37 +108,65 @@ public class GraphTest extends TestCase {
         groupedGraphs.forEach((integer, graphList1) -> log.info("{} - {}", integer, graphList1.size()));
     }
 
-    public void testDegreeDist(){
+    public void testDegreeDist() {
         final List<String> graphPaths = GraphUtils.getFilePaths(Constants.GRAPH_FOLDER_NAME);
         setkeys(graphPaths, false);
         List<Graph<Node, Edge>> graphList = new ArrayList<>();
         try {
             graphList.add(GraphUtils.getGraph(graphPaths.get(0)));
-        } catch (ParserConfigurationException |SAXException | IOException e) {
+        } catch (ParserConfigurationException | SAXException | IOException e) {
             log.error(e.getMessage());
         }
-        new DataMining(true).computeDegreeDistribution(graphList.get(0));
+        new DataMining(true).writeDegreeDistribution(graphList.get(0), "test");
     }
 
-    public void testDegreeAgnstVertice(){
+    public void testAccumlatedData() {
         final List<String> graphPaths = GraphUtils.getFilePaths(Constants.GRAPH_FOLDER_NAME);
         setkeys(graphPaths, false);
         List<Graph<Node, Edge>> graphList = new ArrayList<>();
         try {
-            graphList.add(GraphUtils.getGraph(graphPaths.get(0)));
-        } catch (ParserConfigurationException |SAXException | IOException e) {
+            for (int i = 0; i < graphPaths.size(); i++) {
+                graphList.add(GraphUtils.getGraph(graphPaths.get(i)));
+            }
+        } catch (ParserConfigurationException | SAXException | IOException e) {
             log.error(e.getMessage());
         }
-        new DataMining(true).writeDegreeAgnstNodeData(graphList.get(0), false);
+        new DataMining(true).writeAccumulatedPerYearData(graphList, "test");
     }
 
-    public void testPageRank(){
+    public void testPerYearData() {
+        final List<String> graphPaths = GraphUtils.getFilePaths(Constants.GRAPH_FOLDER_NAME);
+        setkeys(graphPaths, false);
+        List<Graph<Node, Edge>> graphList = new ArrayList<>();
+        try {
+            for (int i = 0; i < graphPaths.size(); i++) {
+                graphList.add(GraphUtils.getGraph(graphPaths.get(i)));
+            }
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            log.error(e.getMessage());
+        }
+        new DataMining(true).writePerYearData(graphList, "test");
+    }
+
+    public void testDegreeAgnstVertice() {
         final List<String> graphPaths = GraphUtils.getFilePaths(Constants.GRAPH_FOLDER_NAME);
         setkeys(graphPaths, false);
         List<Graph<Node, Edge>> graphList = new ArrayList<>();
         try {
             graphList.add(GraphUtils.getGraph(graphPaths.get(0)));
-        } catch (ParserConfigurationException |SAXException | IOException e) {
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            log.error(e.getMessage());
+        }
+        new DataMining(true).writeDegreeAgainstNodeData(graphList.get(0), false, "test");
+    }
+
+    public void testPageRank() {
+        final List<String> graphPaths = GraphUtils.getFilePaths(Constants.GRAPH_FOLDER_NAME);
+        setkeys(graphPaths, false);
+        List<Graph<Node, Edge>> graphList = new ArrayList<>();
+        try {
+            graphList.add(GraphUtils.getGraph(graphPaths.get(0)));
+        } catch (ParserConfigurationException | SAXException | IOException e) {
             log.error(e.getMessage());
         }
         final List<Node> nodes = new DataMining(true).pageRank(graphList.get(0));
@@ -149,25 +176,25 @@ public class GraphTest extends TestCase {
         for (int i = 0; i < Constants.TOP_K_RANKED_NODES; i++) System.out.println(nodes.get(i).getId());
     }
 
-    public void testUndirectedGraphDeg(){
+    public void testUndirectedGraphDeg() {
         UndirectedGraph<Node, Edge> graph = new UndirectedSparseGraph<>();
         final Node v1 = new Node();
         final Node v2 = new Node();
         final Node v3 = new Node();
         graph.addEdge(new Edge(), v1, v2);
         graph.addEdge(new Edge(), v1, v3);
-        System.out.println("v1 InEdges = "+graph.getInEdges(v1).size());
-        System.out.println("v1 outEdges = "+graph.getOutEdges(v1).size());
-        System.out.println("v1 IncidentEdges = "+graph.getIncidentEdges(v1).size());
+        System.out.println("v1 InEdges = " + graph.getInEdges(v1).size());
+        System.out.println("v1 outEdges = " + graph.getOutEdges(v1).size());
+        System.out.println("v1 IncidentEdges = " + graph.getIncidentEdges(v1).size());
     }
 
-    public void testSubGraph(){
+    public void testSubGraph() {
         final List<String> graphPaths = GraphUtils.getFilePaths(Constants.GRAPH_FOLDER_NAME);
         setkeys(graphPaths, false);
         List<Graph<Node, Edge>> graphList = new ArrayList<>();
         try {
             graphList.add(GraphUtils.getGraph(graphPaths.get(0)));
-        } catch (ParserConfigurationException |SAXException | IOException e) {
+        } catch (ParserConfigurationException | SAXException | IOException e) {
             log.error(e.getMessage());
         }
         final DataMining dataMining = new DataMining(false);
@@ -179,11 +206,12 @@ public class GraphTest extends TestCase {
                 maxCluster = cluster;
         }
         Assert.assertEquals(maxCluster.size(), subgraph.getVertexCount());
-        System.out.println("max cluster size = "+ maxCluster.size());
-        System.out.println("sub-graph node size = "+ subgraph.getVertexCount());
+        System.out.println("max cluster size = " + maxCluster.size());
+        System.out.println("sub-graph node size = " + subgraph.getVertexCount());
         new DataMining(false).visualizeGraph(graphList.get(0), "main graph");
         dataMining.visualizeGraph(subgraph, "largest sub-graph");
-        while (true){}
+        while (true) {
+        }
     }
 
 }

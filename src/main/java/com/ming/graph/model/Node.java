@@ -12,8 +12,8 @@ import static com.ming.graph.util.GraphUtils.printProps;
  * Project: GraphProject
  */
 public class Node {
-    private String id;
     private final Map<String, String> nodePropsMap;
+    private String id;
 
     public Node() {
         this.nodePropsMap = new HashMap<>();
@@ -35,6 +35,6 @@ public class Node {
     public String toString() {
         return "Node{" +
                 "id = '" + id + '\'' +
-                ", properties : {" + printProps(nodePropsMap)+ "}}";
+                ", properties : {" + printProps(nodePropsMap) + "}}";
     }
 }
