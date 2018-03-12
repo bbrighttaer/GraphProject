@@ -6,6 +6,7 @@ import com.ming.graph.api.IGraphAnalysis;
 import com.ming.graph.config.Constants;
 import com.ming.graph.model.Edge;
 import com.ming.graph.model.Node;
+import com.ming.graph.util.GraphUtils;
 import edu.uci.ics.jung.graph.Graph;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +56,7 @@ public class EvolutionManager implements IEvolutionManager {
         ga.getDataMining().writeDegreeAgainstNodeData(subGraph, Constants.SORT_DEGREE_VRS_VERTICE_DATA,
                 "sub_graph");
         ga.getDataMining().writeFeatures(subGraph, "sub_graph");
+        GraphUtils.writGraphToFile("biggestSubGraph", subGraph);
     }
 
     @Override

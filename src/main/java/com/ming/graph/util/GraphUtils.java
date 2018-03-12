@@ -12,6 +12,7 @@ import com.ming.graph.xsd.GraphmlType;
 import edu.uci.ics.jung.graph.*;
 import edu.uci.ics.jung.io.GraphMLMetadata;
 import edu.uci.ics.jung.io.GraphMLReader;
+import edu.uci.ics.jung.io.GraphMLWriter;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -21,8 +22,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,7 +37,7 @@ import static com.ming.graph.config.Constants.*;
  */
 public class GraphUtils {
     public static int GRAPH_COUNT = 0;
-    public static boolean isDirected;
+    private static boolean isDirected;
     private static Logger log = (Logger) LoggerFactory.getLogger(GraphUtils.class);
 
     public static List<String> getFilePaths(String folderName) {
@@ -48,8 +48,9 @@ public class GraphUtils {
         File file = new File(folderPath);
         if (file.isDirectory()) {
             final String[] files = file.list((dir, name) -> StringUtils.endsWith(name, ".graphml"));
-            for (int i = 0; i < files.length; i++) {
-                graphFilePathList.add(folderPath + "/" + files[i]);
+            assert files != null;
+            for (String file1 : files) {
+                graphFilePathList.add(folderPath + "/" + file1);
             }
         }
         return graphFilePathList;
@@ -77,10 +78,10 @@ public class GraphUtils {
     }
 
     private static void setGraphMetadata(Graph<Node, Edge> graph, GraphMLReader gmlr, String graphLabel) {
-        BiMap<Node, String> vertexIds = gmlr.getVertexIDs();
+        BiMap vertexIds = gmlr.getVertexIDs();
         //final BiMap<Edge, String> edgeIDs = gmlr.getEdgeIDs();
-        final Map<String, GraphMLMetadata<Node>> vertexMetadata = gmlr.getVertexMetadata();
-        final Map<String, GraphMLMetadata<Edge>> edgeMetadata = gmlr.getEdgeMetadata();
+        final Map vertexMetadata = gmlr.getVertexMetadata();
+        final Map edgeMetadata = gmlr.getEdgeMetadata();
         Constants.GRAPH_METADATA_MAP.put(graph, graphLabel);
         setNodeProperties(graph, vertexIds, vertexMetadata);
         setEdgeProperties(graph, edgeMetadata);
@@ -178,5 +179,24 @@ public class GraphUtils {
             }});
         }
         return groupedGraphs;
+    }
+
+    public static void writGraphToFile(String filename, Graph<Node, Edge> graph) {
+        try {
+            GraphMLWriter<Node, Edge> graphMLWriter = new GraphMLWriter<>();
+            PrintWriter out = new PrintWriter(new BufferedWriter(
+                    new FileWriter(String.format("data/%s.graphml", filename))));
+            graphMLWriter.addEdgeData("ayjid", null, null,
+                    edge -> edge.getEdgePropsMap().get("ayjid"));
+            graphMLWriter.addEdgeData("weight", null, null,
+                    edge -> edge.getEdgePropsMap().get("weight"));
+            graphMLWriter.addGraphData("type", "the type of the graph", "coauthors",
+                    g -> "coauthors");
+            graphMLWriter.setVertexIDs(node -> node.getId());
+            graphMLWriter.save(graph, out);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+
     }
 }

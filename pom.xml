@@ -15,6 +15,7 @@
         <apache.commons.ver>3.5</apache.commons.ver>
         <jung.ver>2.1.1</jung.ver>
         <commons.io.version>2.5</commons.io.version>
+        <xstream.ver>1.4.10</xstream.ver>
     </properties>
 
     <build>
@@ -80,6 +81,14 @@
             <artifactId>xchart</artifactId>
             <version>${xchart.ver}</version>
         </dependency>
+
+        <!--&lt;!&ndash; https://mvnrepository.com/artifact/com.thoughtworks.xstream/xstream &ndash;&gt;-->
+        <!--<dependency>-->
+        <!--<groupId>com.thoughtworks.xstream</groupId>-->
+        <!--<artifactId>xstream</artifactId>-->
+        <!--<version>${xstream.ver}</version>-->
+        <!--</dependency>-->
+
 
     </dependencies>
 

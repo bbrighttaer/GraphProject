@@ -125,8 +125,8 @@ public class GraphTest extends TestCase {
         setkeys(graphPaths, false);
         List<Graph<Node, Edge>> graphList = new ArrayList<>();
         try {
-            for (int i = 0; i < graphPaths.size(); i++) {
-                graphList.add(GraphUtils.getGraph(graphPaths.get(i)));
+            for (String graphPath : graphPaths) {
+                graphList.add(GraphUtils.getGraph(graphPath));
             }
         } catch (ParserConfigurationException | SAXException | IOException e) {
             log.error(e.getMessage());
@@ -139,8 +139,8 @@ public class GraphTest extends TestCase {
         setkeys(graphPaths, false);
         List<Graph<Node, Edge>> graphList = new ArrayList<>();
         try {
-            for (int i = 0; i < graphPaths.size(); i++) {
-                graphList.add(GraphUtils.getGraph(graphPaths.get(i)));
+            for (String graphPath : graphPaths) {
+                graphList.add(GraphUtils.getGraph(graphPath));
             }
         } catch (ParserConfigurationException | SAXException | IOException e) {
             log.error(e.getMessage());
@@ -212,6 +212,19 @@ public class GraphTest extends TestCase {
         dataMining.visualizeGraph(subgraph, "largest sub-graph");
         while (true) {
         }
+    }
+
+    public void testSerializedGraph() {
+        final List<String> graphPaths = GraphUtils.getFilePaths(Constants.GRAPH_FOLDER_NAME);
+        setkeys(graphPaths, false);
+        List<Graph<Node, Edge>> graphList = new ArrayList<>();
+        try {
+            graphList.add(GraphUtils.getGraph(graphPaths.get(0)));
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            log.error(e.getMessage());
+        }
+        Graph<Node, Edge> graph = graphList.get(0);
+        GraphUtils.writGraphToFile("testGraph", graph);
     }
 
 }
